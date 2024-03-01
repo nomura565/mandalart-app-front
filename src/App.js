@@ -1,18 +1,35 @@
 import logo from './logo.svg';
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
+import { useAtom } from 'jotai';
+
 
 import Login from './routes/Login';
 import Top from './routes/Top';
+import { 
+  getSession
+   } from './components/CommonFunc';
+import { 
+  loggedInAtom
+   } from './components/Atoms';
 
 function App() {
+  const [loggedIn, setLoggedIn] = useAtom(loggedInAtom);
+
+  const PrivateRoute = ({ children }) => {
+    if (!loggedIn && !getSession().user_id) {
+      return <Navigate to={"/"} />
+    } else {
+      return children
+    }
+  }
+
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/top" element={<Top />} />
+          <Route path="/top" element={<PrivateRoute><Top /></PrivateRoute>} />
         </Routes>
       </BrowserRouter>
     </div>

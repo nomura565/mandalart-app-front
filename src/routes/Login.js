@@ -1,16 +1,13 @@
 import '../App.css';
 
-import { useForm, SubmitHandler } from "react-hook-form";
-
 import * as React from 'react';
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -18,8 +15,24 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from "axios";
+import { useAtom } from 'jotai';
+import { sha256 } from 'js-sha256';
+import LoginIcon from '@mui/icons-material/Login';
+
+import { AUTHOR, MESSAGE, API_URL, THEME } from './../components/Const';
+import { isNullOrEmpty, setSession } from './../components/CommonFunc';
+import Progress from './../components/Progress';
+import { 
+  isLoadingAtom
+  , loggedInAtom
+   } from './../components/Atoms';
 
 function Login() {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
+  const [loggedIn, setLoggedIn] = useAtom(loggedInAtom);
+
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
 
@@ -37,31 +50,77 @@ function Login() {
     setPassword(event.target.value);
   };
 
-  const onSubmit = (event) => {
-    event.preventDefault();
+  const isValidate = () => {
+    let result = true;
     setErrorMessageUserId("");
     setErrorMessagePassword("");
     setErrorUserId(false);
     setErrorPassword(false);
 
-    if(userId === ""){
+    if(isNullOrEmpty(userId)){
       setErrorUserId(true);
-      setErrorMessageUserId("ユーザIDを入力してください");
+      setErrorMessageUserId(MESSAGE.USERID_EMPTY);
+      result = false;
     }
 
-    if(password === ""){
+    if(isNullOrEmpty(password)){
       setErrorPassword(true);
-      setErrorMessagePassword("パスワードを入力してください");
+      setErrorMessagePassword(MESSAGE.PASSWORD_EMPTY);
+      result = false;
     }
 
+    return result;
   }
 
+  /** ログイン処理 */
+  const onSubmit = (event) => {
+    event.preventDefault();
+
+    if(!isValidate()){
+      return;
+    }
+
+    setIsLoading(true);
+
+    axios
+      .post(API_URL.LOGIN, {
+        user_id: userId,
+        password: sha256(password)
+      })
+      .then((response) => {
+        setIsLoading(false);
+        if (response.status === 200) {
+          setLoggedIn(true);
+          setSession(response.data);
+          navigate("/Top");
+        }else{
+          setErrorUserId(true);
+          setErrorPassword(true);
+          setErrorMessagePassword(MESSAGE.LOGIN_FAIL);
+          return;
+        }
+
+      })
+      .catch((error) => {
+        setErrorUserId(true);
+        setErrorPassword(true);
+        setIsLoading(false);
+        if(error.response?.status === 404){
+          setErrorMessagePassword(MESSAGE.LOGIN_FAIL);
+        }else{
+          setErrorMessagePassword(error.message);
+        }
+        return;
+      });
+  }
+
+  /** 著作権 */
   const Copyright = (props) => {
     return (
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
-        <Link color="inherit" href="#">
-          Yusuke Nomura
+        <Link color="inherit" href="https://github.com/nomura565/mandalart-app-front">
+          {AUTHOR}
         </Link>{' '}
         {new Date().getFullYear()}
         {'.'}
@@ -69,7 +128,7 @@ function Login() {
     );
   }
 
-  const defaultTheme = createTheme();
+  const defaultTheme = createTheme(THEME);
 
   return (
     <div className="wrapper">
@@ -92,7 +151,7 @@ function Login() {
           </Typography>
           <Box component="form" noValidate onSubmit={onSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid item xs={12} className='grid-login-input'>
                 <TextField
                   required
                   error={errorUserId}
@@ -105,7 +164,7 @@ function Login() {
                   helperText={errorMessageUserId}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} className='grid-login-input'>
                 <TextField
                   required
                   fullWidth
@@ -125,9 +184,12 @@ function Login() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={isLoading}
+              startIcon={<LoginIcon />}
             >
               Login
             </Button>
+            <Progress/>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="#" variant="body2">

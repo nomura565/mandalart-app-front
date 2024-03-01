@@ -36,3 +36,47 @@
     transform: rotate(360deg);
   }
 }
+
+.grid-login-input {
+  height: 80px;
+}
+
+.alert {
+  flex-grow: 2;
+}
+
+.toggle-button {
+  flex-grow: 2;
+}
+
+.toggle-button button{
+  padding: 6.5px;
+}
+
+.mandalart-cell {
+  width: 85px !important;
+  height: 85px !important;
+  margin: 0px !important;
+  margin-right: -1px !important;
+}
+
+.mandalart-cell textarea {
+  font-size: 0.7rem;
+}
+
+.mandalart-cell div {
+  border-radius: 0px !important;
+  height: 85px !important;
+}
+
+.center-cell {
+  background-color: #CCE5FF;
+}
+
+.center-achievement-cell {
+  background-color: #E3C800;
+}
+
+.achievement-cell {
+  background-color: #FFFF88;
+}
