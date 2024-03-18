@@ -2,9 +2,7 @@ import '../App.css';
 
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
 
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -18,17 +16,21 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import { format } from 'react-string-format';
 
-import { AUTHOR, MESSAGE, API_URL, SELECT_YYYY_LIST, ROLE, THEME } from './../components/Const';
-import { isNullOrEmpty, getSession } from './../components/CommonFunc';
-import { addMonthDateToYM } from './../components/FormatDate';
+import { MESSAGE, API_URL, SELECT_YYYY_LIST, ROLE, THEME } from './../components/Const';
+import { isNullOrEmpty, getSession, getObjectCopy } from './../components/CommonFunc';
+import { addMonthDateToYM, formatDateToYM } from './../components/FormatDate';
 
 import Progress from './../components/Progress';
 import MandalartCellRow from './../components/MandalartCellRow';
 import BottomNav from './../components/BottomNav';
 import ErrorMessage from './../components/ErrorMessage';
+import SuccessMessage from './../components/SuccessMessage';
 import Logout from './../components/Logout';
 import BasicSpeedDial from './../components/BasicSpeedDial';
+import ExplanatoryNote from './../components/ExplanatoryNote';
+import AchievementGauge from './../components/AchievementGauge';
 
 import { 
   isLoadingAtom
@@ -38,23 +40,215 @@ import {
   , bottomNavValueAtom
   , mandalartCellListAtomsAtom
   , errorMessageAtom
+  , initMandalartCell
+  , selectUserIdAtom
+  , successMessageAtom
+  , whenAchievementAtom
+  , targetMessageAtom
    } from './../components/Atoms';
 
 function Top() {
   const defaultTheme = createTheme(THEME);
 
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
-  const [loggedIn, setLoggedIn] = useAtom(loggedInAtom);
 
-  const [selectUser, setSelectUser] = useState("");
+  const [selectUserId, setSelectUserId] = useAtom(selectUserIdAtom);
   const [selectYm, setSelectYm] = useState(addMonthDateToYM(new Date(), -1));
   const [isAdmin, setIsAdmin] = useState((getSession().role_id === ROLE.ADMIN) ? true : false);
   const [userId, setUserId] = useState(getSession().user_id);
 
   const [selectYmFunc, setSelectYmFunc] = useAtom(selectYmFuncAtom);
   const [errorMessage, setErrorMessage] = useAtom(errorMessageAtom);
+  const [successMessage, setSuccessMessage] = useAtom(successMessageAtom);
+  const [whenAchievement, setWhenAchievement] = useAtom(whenAchievementAtom);
+  const [bottomNavValue, setBottomNavValue] = useAtom(bottomNavValueAtom);
+  const [targetMessage, setTargetMessage] = useAtom(targetMessageAtom);
+  const [textFieldDisabled, setTextFieldDisabled] = useAtom(textFieldDisabledAtom);
 
   const [mandalartCellList, setMandalartCellList] = useAtom(mandalartCellListAtomsAtom);
+  //愚直に0～81までのatomを作る　愚直すぎるのであくまで暫定
+  const [mandalartCell0, setMandalartCell0] = useAtom(mandalartCellList[0]);
+  const [mandalartCell1, setMandalartCell1] = useAtom(mandalartCellList[1]);
+  const [mandalartCell2, setMandalartCell2] = useAtom(mandalartCellList[2]);
+  const [mandalartCell3, setMandalartCell3] = useAtom(mandalartCellList[3]);
+  const [mandalartCell4, setMandalartCell4] = useAtom(mandalartCellList[4]);
+  const [mandalartCell5, setMandalartCell5] = useAtom(mandalartCellList[5]);
+  const [mandalartCell6, setMandalartCell6] = useAtom(mandalartCellList[6]);
+  const [mandalartCell7, setMandalartCell7] = useAtom(mandalartCellList[7]);
+  const [mandalartCell8, setMandalartCell8] = useAtom(mandalartCellList[8]);
+  const [mandalartCell9, setMandalartCell9] = useAtom(mandalartCellList[9]);
+  //10~19
+  const [mandalartCell10, setMandalartCell10] = useAtom(mandalartCellList[10]);
+  const [mandalartCell11, setMandalartCell11] = useAtom(mandalartCellList[11]);
+  const [mandalartCell12, setMandalartCell12] = useAtom(mandalartCellList[12]);
+  const [mandalartCell13, setMandalartCell13] = useAtom(mandalartCellList[13]);
+  const [mandalartCell14, setMandalartCell14] = useAtom(mandalartCellList[14]);
+  const [mandalartCell15, setMandalartCell15] = useAtom(mandalartCellList[15]);
+  const [mandalartCell16, setMandalartCell16] = useAtom(mandalartCellList[16]);
+  const [mandalartCell17, setMandalartCell17] = useAtom(mandalartCellList[17]);
+  const [mandalartCell18, setMandalartCell18] = useAtom(mandalartCellList[18]);
+  const [mandalartCell19, setMandalartCell19] = useAtom(mandalartCellList[19]);
+  //20~29
+  const [mandalartCell20, setMandalartCell20] = useAtom(mandalartCellList[20]);
+  const [mandalartCell21, setMandalartCell21] = useAtom(mandalartCellList[21]);
+  const [mandalartCell22, setMandalartCell22] = useAtom(mandalartCellList[22]);
+  const [mandalartCell23, setMandalartCell23] = useAtom(mandalartCellList[23]);
+  const [mandalartCell24, setMandalartCell24] = useAtom(mandalartCellList[24]);
+  const [mandalartCell25, setMandalartCell25] = useAtom(mandalartCellList[25]);
+  const [mandalartCell26, setMandalartCell26] = useAtom(mandalartCellList[26]);
+  const [mandalartCell27, setMandalartCell27] = useAtom(mandalartCellList[27]);
+  const [mandalartCell28, setMandalartCell28] = useAtom(mandalartCellList[28]);
+  const [mandalartCell29, setMandalartCell29] = useAtom(mandalartCellList[29]);
+  //30~39
+  const [mandalartCell30, setMandalartCell30] = useAtom(mandalartCellList[30]);
+  const [mandalartCell31, setMandalartCell31] = useAtom(mandalartCellList[31]);
+  const [mandalartCell32, setMandalartCell32] = useAtom(mandalartCellList[32]);
+  const [mandalartCell33, setMandalartCell33] = useAtom(mandalartCellList[33]);
+  const [mandalartCell34, setMandalartCell34] = useAtom(mandalartCellList[34]);
+  const [mandalartCell35, setMandalartCell35] = useAtom(mandalartCellList[35]);
+  const [mandalartCell36, setMandalartCell36] = useAtom(mandalartCellList[36]);
+  const [mandalartCell37, setMandalartCell37] = useAtom(mandalartCellList[37]);
+  const [mandalartCell38, setMandalartCell38] = useAtom(mandalartCellList[38]);
+  const [mandalartCell39, setMandalartCell39] = useAtom(mandalartCellList[39]);
+  //40~49
+  const [mandalartCell40, setMandalartCell40] = useAtom(mandalartCellList[40]);
+  const [mandalartCell41, setMandalartCell41] = useAtom(mandalartCellList[41]);
+  const [mandalartCell42, setMandalartCell42] = useAtom(mandalartCellList[42]);
+  const [mandalartCell43, setMandalartCell43] = useAtom(mandalartCellList[43]);
+  const [mandalartCell44, setMandalartCell44] = useAtom(mandalartCellList[44]);
+  const [mandalartCell45, setMandalartCell45] = useAtom(mandalartCellList[45]);
+  const [mandalartCell46, setMandalartCell46] = useAtom(mandalartCellList[46]);
+  const [mandalartCell47, setMandalartCell47] = useAtom(mandalartCellList[47]);
+  const [mandalartCell48, setMandalartCell48] = useAtom(mandalartCellList[48]);
+  const [mandalartCell49, setMandalartCell49] = useAtom(mandalartCellList[49]);
+  //50~59
+  const [mandalartCell50, setMandalartCell50] = useAtom(mandalartCellList[50]);
+  const [mandalartCell51, setMandalartCell51] = useAtom(mandalartCellList[51]);
+  const [mandalartCell52, setMandalartCell52] = useAtom(mandalartCellList[52]);
+  const [mandalartCell53, setMandalartCell53] = useAtom(mandalartCellList[53]);
+  const [mandalartCell54, setMandalartCell54] = useAtom(mandalartCellList[54]);
+  const [mandalartCell55, setMandalartCell55] = useAtom(mandalartCellList[55]);
+  const [mandalartCell56, setMandalartCell56] = useAtom(mandalartCellList[56]);
+  const [mandalartCell57, setMandalartCell57] = useAtom(mandalartCellList[57]);
+  const [mandalartCell58, setMandalartCell58] = useAtom(mandalartCellList[58]);
+  const [mandalartCell59, setMandalartCell59] = useAtom(mandalartCellList[59]);
+  //60~69
+  const [mandalartCell60, setMandalartCell60] = useAtom(mandalartCellList[60]);
+  const [mandalartCell61, setMandalartCell61] = useAtom(mandalartCellList[61]);
+  const [mandalartCell62, setMandalartCell62] = useAtom(mandalartCellList[62]);
+  const [mandalartCell63, setMandalartCell63] = useAtom(mandalartCellList[63]);
+  const [mandalartCell64, setMandalartCell64] = useAtom(mandalartCellList[64]);
+  const [mandalartCell65, setMandalartCell65] = useAtom(mandalartCellList[65]);
+  const [mandalartCell66, setMandalartCell66] = useAtom(mandalartCellList[66]);
+  const [mandalartCell67, setMandalartCell67] = useAtom(mandalartCellList[67]);
+  const [mandalartCell68, setMandalartCell68] = useAtom(mandalartCellList[68]);
+  const [mandalartCell69, setMandalartCell69] = useAtom(mandalartCellList[69]);
+  //70~79
+  const [mandalartCell70, setMandalartCell70] = useAtom(mandalartCellList[70]);
+  const [mandalartCell71, setMandalartCell71] = useAtom(mandalartCellList[71]);
+  const [mandalartCell72, setMandalartCell72] = useAtom(mandalartCellList[72]);
+  const [mandalartCell73, setMandalartCell73] = useAtom(mandalartCellList[73]);
+  const [mandalartCell74, setMandalartCell74] = useAtom(mandalartCellList[74]);
+  const [mandalartCell75, setMandalartCell75] = useAtom(mandalartCellList[75]);
+  const [mandalartCell76, setMandalartCell76] = useAtom(mandalartCellList[76]);
+  const [mandalartCell77, setMandalartCell77] = useAtom(mandalartCellList[77]);
+  const [mandalartCell78, setMandalartCell78] = useAtom(mandalartCellList[78]);
+  const [mandalartCell79, setMandalartCell79] = useAtom(mandalartCellList[79]);
+  const [mandalartCell80, setMandalartCell80] = useAtom(mandalartCellList[80]);
+
+  const getMandalartCellArrayList = () => {
+    return [
+      mandalartCell0, mandalartCell1, mandalartCell2, mandalartCell3, mandalartCell4, mandalartCell5, mandalartCell6, mandalartCell7, mandalartCell8, mandalartCell9
+      , mandalartCell10, mandalartCell11, mandalartCell12, mandalartCell13, mandalartCell14, mandalartCell15, mandalartCell16, mandalartCell17, mandalartCell18, mandalartCell19
+      , mandalartCell20, mandalartCell21, mandalartCell22, mandalartCell23, mandalartCell24, mandalartCell25, mandalartCell26, mandalartCell27, mandalartCell28, mandalartCell29
+      , mandalartCell30, mandalartCell31, mandalartCell32, mandalartCell33, mandalartCell34, mandalartCell35, mandalartCell36, mandalartCell37, mandalartCell38, mandalartCell39
+      , mandalartCell40, mandalartCell41, mandalartCell42, mandalartCell43, mandalartCell44, mandalartCell45, mandalartCell46, mandalartCell47, mandalartCell48, mandalartCell49
+      , mandalartCell50, mandalartCell51, mandalartCell52, mandalartCell53, mandalartCell54, mandalartCell55, mandalartCell56, mandalartCell57, mandalartCell58, mandalartCell59
+      , mandalartCell60, mandalartCell61, mandalartCell62, mandalartCell63, mandalartCell64, mandalartCell65, mandalartCell66, mandalartCell67, mandalartCell68, mandalartCell69
+      , mandalartCell70, mandalartCell71, mandalartCell72, mandalartCell73, mandalartCell74, mandalartCell75, mandalartCell76, mandalartCell77, mandalartCell78, mandalartCell79
+      , mandalartCell80
+    ];
+  }
+  const getSetMandalartCellArrayList = () => {
+    return [
+      setMandalartCell0, setMandalartCell1, setMandalartCell2, setMandalartCell3, setMandalartCell4, setMandalartCell5, setMandalartCell6, setMandalartCell7, setMandalartCell8, setMandalartCell9
+      , setMandalartCell10, setMandalartCell11, setMandalartCell12, setMandalartCell13, setMandalartCell14, setMandalartCell15, setMandalartCell16, setMandalartCell17, setMandalartCell18, setMandalartCell19
+      , setMandalartCell20, setMandalartCell21, setMandalartCell22, setMandalartCell23, setMandalartCell24, setMandalartCell25, setMandalartCell26, setMandalartCell27, setMandalartCell28, setMandalartCell29
+      , setMandalartCell30, setMandalartCell31, setMandalartCell32, setMandalartCell33, setMandalartCell34, setMandalartCell35, setMandalartCell36, setMandalartCell37, setMandalartCell38, setMandalartCell39
+      , setMandalartCell40, setMandalartCell41, setMandalartCell42, setMandalartCell43, setMandalartCell44, setMandalartCell45, setMandalartCell46, setMandalartCell47, setMandalartCell48, setMandalartCell49
+      , setMandalartCell50, setMandalartCell51, setMandalartCell52, setMandalartCell53, setMandalartCell54, setMandalartCell55, setMandalartCell56, setMandalartCell57, setMandalartCell58, setMandalartCell59
+      , setMandalartCell60, setMandalartCell61, setMandalartCell62, setMandalartCell63, setMandalartCell64, setMandalartCell65, setMandalartCell66, setMandalartCell67, setMandalartCell68, setMandalartCell69
+      , setMandalartCell70, setMandalartCell71, setMandalartCell72, setMandalartCell73, setMandalartCell74, setMandalartCell75, setMandalartCell76, setMandalartCell77, setMandalartCell78, setMandalartCell79
+      , setMandalartCell80
+    ];
+  }
+  
+  /** 達成率の取得 */
+  const getTotalAchievementLevel = () => {
+    //9*9マスに3レベルまであるとすると(3*81)
+    let total = getMandalartCellArrayList().reduce(function(sum, element){
+      return sum + element.achievementLevel;
+    }, 0);
+    let culc = total / (3*81);
+    return culc;
+  }
+
+  /** マンダラート機能変更 */
+  const bottomNavChange = (newValue) => {
+    setBottomNavValue(newValue);
+    if(newValue === 1){
+      setTextFieldDisabled('auto');
+    }else{
+      setTextFieldDisabled('none');
+    }
+  }
+
+  /** 保存処理 */
+  const saveExecute = () => {
+    setErrorMessage("");
+    console.log("saveExecute");
+    let sendData = {
+      user_id: selectUserId
+      , yyyymm: formatDateToYM(new Date())
+
+    };
+    getMandalartCellArrayList().map((cell, idx) => {
+      sendData[`achievement_level_${idx}`] = cell.achievementLevel;
+      sendData[`target_${idx}`] = cell.textFieldValue;
+    });
+    //console.log(sendData);
+
+    setIsLoading(true);
+
+    axios
+      .post(API_URL.SAVE_MANDALART, sendData)
+      .then((response) => {
+        setIsLoading(false);
+        if (response.status === 200) {
+          console.log("success");
+          setSuccessMessage(MESSAGE.SAVE_SUCCESS);
+          getMandalart();
+          setTimeout(() => {
+            setSuccessMessage("");
+          }, "2000");
+        }
+
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setErrorMessage(error.message);
+        return;
+      });
+
+  }
+
+  /** 全てのセルをクリア */
+  const clearAllExecute = () => {
+    let SetMandalartCellArrayList = getSetMandalartCellArrayList();
+    SetMandalartCellArrayList.map((setCell, idx) => {
+      setCell(getObjectCopy(initMandalartCell));
+    });
+  }
 
   const [userList, setUserList] = useState([]);
 
@@ -79,10 +273,10 @@ function Top() {
           if(isAdmin){
             
           }else{
-            setSelectUser(userId);
+            setSelectUserId(userId);
+            getMandalart(userId);
           }
         }else{
-
           return;
         }
 
@@ -94,9 +288,55 @@ function Top() {
       });
   }
 
+  /** マンダラート取得 */
+  const getMandalart = (_userId) => {
+    setErrorMessage("");
+    setIsLoading(true);
+    const sendUserId = (_userId) ? _userId : selectUserId;
+    axios
+      .post(API_URL.GET_MANDALART, {
+        user_id: sendUserId
+      , yyyymm: false
+      })
+      .then((response) => {
+        setIsLoading(false);
+        if (response.status === 200) {
+          console.log(response.data);
+          let SetMandalartCellArrayList = getSetMandalartCellArrayList();
+          SetMandalartCellArrayList.map((setCell, idx) => {
+            const cell = {
+              key: idx
+              , achievementLevel: response.data[`$achievement_level_${idx}`]
+              , textFieldValue: response.data[`$target_${idx}`]
+            }
+            setCell(cell);
+          });
+          setWhenAchievement(format(MESSAGE.WHEN_ACHIEVEMENT, response.data.yyyymm));
+          setTargetMessage("");
+          bottomNavChange(0);
+        }else{
+          return;
+        }
+
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        //データなしは正常として扱う
+        if(error.response?.status === 404){
+          clearAllExecute();
+          setTargetMessage(MESSAGE.TARGET_MESSAGE);
+          bottomNavChange(1);
+        } else {
+          setErrorMessage(error.message);
+        }
+        return;
+      });
+  }
+
   /** 選択ユーザ変更 */
-  const selectUserChange = (e) => {
-    setSelectUser(e.target.value);
+  const selectUserIdChange = (e) => {
+    setSelectUserId(e.target.value);
+    getMandalart(e.target.value);
   }
 
   /** 選択年月変更 */
@@ -116,6 +356,7 @@ function Top() {
         <CssBaseline />
         <Progress/>
         <ErrorMessage />
+        <SuccessMessage />
         <Box
           sx={{
             marginTop: 2,
@@ -126,13 +367,13 @@ function Top() {
         >
           <Grid container spacing={2}>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-              <InputLabel id="select-user-label">ユーザ選択</InputLabel>
+              <InputLabel id="select-user-label">{MESSAGE.SELECT_USER_LABEL}</InputLabel>
               <Select
                 labelId="select-user-label"
                 id="select-user"
-                label="ユーザ選択"
-                onChange={selectUserChange}
-                value={selectUser}
+                label={MESSAGE.SELECT_USER_LABEL}
+                onChange={selectUserIdChange}
+                value={selectUserId}
                 disabled={!isAdmin}
               >
                 {userList.map((user) => {
@@ -142,13 +383,15 @@ function Top() {
                 })}
               </Select>
             </FormControl>
-
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-              <InputLabel id="select-ym-label">年月選択</InputLabel>
+              {bottomNavValue === 2
+              ?
+              <div>
+              <InputLabel id="select-ym-label">{MESSAGE.SELECT_YM_LABEL}</InputLabel>
               <Select
                 labelId="select-ym-label"
                 id="select-ym"
-                label="年月選択"
+                label={MESSAGE.SELECT_YM_LABEL}
                 onChange={selectYmChange}
                 value={selectYm}
               >
@@ -161,8 +404,15 @@ function Top() {
                     })
                 ))}
               </Select>
+              </div>
+              :
+              ""
+              }
             </FormControl>
+            
             <FormControl className="toggle-button" sx={{ m: 1, minWidth: 120 }} size="small">
+              {bottomNavValue === 2
+              ?
               <ToggleButtonGroup
                 color="primary"
                 value={selectYmFunc}
@@ -170,16 +420,18 @@ function Top() {
                 onChange={selectYmFuncChange}
                 aria-label="Platform"
               >
-                <ToggleButton value={0}>比較</ToggleButton>
-                <ToggleButton value={1}>表示</ToggleButton>
+                <ToggleButton value={0}>{MESSAGE.COMPARE}</ToggleButton>
+                <ToggleButton value={1}>{MESSAGE.SHOW}</ToggleButton>
               </ToggleButtonGroup>
+              :
+              ""
+              }
             </FormControl>
-          
             <Logout />
           </Grid>
         </Box>
 
-        <BottomNav />
+        <BottomNav bottomNavChange={bottomNavChange}/>
         <Box
           sx={{
             marginTop: 2,
@@ -202,8 +454,13 @@ function Top() {
           <MandalartCellRow rowIndex={7} />
           <MandalartCellRow rowIndex={8} />
         </Box>
-        <BasicSpeedDial />
+        <BasicSpeedDial 
+          clearAllExecute={clearAllExecute}
+          saveExecute={saveExecute}
+        />
       </Container>
+      <ExplanatoryNote />
+      <AchievementGauge  getTotalAchievementLevel={getTotalAchievementLevel} />
     </ThemeProvider>
   </div>
   );

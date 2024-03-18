@@ -1,22 +1,13 @@
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
 import { useAtom } from 'jotai';
 
 import { 
-  isLoadingAtom
-  , loggedInAtom
-  , selectYmFuncAtom
-  , textFieldDisabledAtom
+  textFieldDisabledAtom
   , bottomNavValueAtom
   , mandalartCellListAtomsAtom
    } from './../components/Atoms';
 
 const MandalartCell = (props) => {
-
-  const cellClass = "mandalart-cell";
-  const centerCellClass = cellClass + " center-cell";
-  const centerAchievementCellClass = cellClass + " center-achievement-cell";
-  const achievementCellClass = cellClass + " achievement-cell";
 
   let syncCellIdx = 0;
   let isSync = false;
@@ -71,6 +62,35 @@ const MandalartCell = (props) => {
       break;
   }
 
+  let isLeft = false;
+  let isTop = false;
+  let isRight = false;
+  let isBottom = false;
+  if(props.idx >= 0 && props.idx <= 8) {
+      isTop = true;
+  }
+  if((props.idx >= 18 && props.idx <= 26) 
+    || (props.idx >= 45 && props.idx <= 53)
+    || (props.idx >= 72 && props.idx <= 80)
+  ){
+    isBottom = true;
+  }
+  if(props.idx % 3 === 0) {
+    isLeft = true;
+  }
+  if(props.idx % 3 === 2) {
+    isRight = true;
+  }
+
+  let cellClass = "mandalart-cell";
+  if(isTop) cellClass = cellClass + " " + "mandalart-cell-top";
+  if(isBottom) cellClass = cellClass + " " + "mandalart-cell-bottom";
+  if(isLeft) cellClass = cellClass + " " + "mandalart-cell-left";
+  if(isRight) cellClass = cellClass + " " + "mandalart-cell-right";
+
+  const centerCellClass = cellClass + " center-cell";
+  const achievementCellClass = cellClass + " achievement-cell-level-";
+
   if(syncCellIdx !== 0) isSync = true;
 
   const [bottomNavValue, setBottomNavValue] = useAtom(bottomNavValueAtom);
@@ -82,9 +102,10 @@ const MandalartCell = (props) => {
   /** セルクラス取得 */
   const getCellClass= () => {
     const defaultClass = (props.isCenter ) ? centerCellClass : cellClass;
-    let afterClass = (props.isCenter ) ? centerAchievementCellClass : achievementCellClass;
+    let afterClass = achievementCellClass + mandalartCell.achievementLevel;
+    if(bottomNavValue == 0) afterClass = afterClass + " mandalart-cell-ponter";
 
-    if(!mandalartCell.isAchievement){
+    if(mandalartCell.achievementLevel === 0){
       afterClass = defaultClass;
     }
     return afterClass;
@@ -92,9 +113,10 @@ const MandalartCell = (props) => {
   /** マンダラート機能変更 */
   const backGroundColorChange = () => {
     if(bottomNavValue === 0){
-      setMandalartCell((oldValue) => ({ ...oldValue, isAchievement: !mandalartCell.isAchievement }));
+      const nextAchievementLevel = (mandalartCell.achievementLevel === 3) ? 0 : mandalartCell.achievementLevel + 1;
+      setMandalartCell((oldValue) => ({ ...oldValue, achievementLevel: nextAchievementLevel }));
       if(isSync){
-        setSyncMandalartCell((oldValue) => ({ ...oldValue, isAchievement: !mandalartCell.isAchievement }));
+        setSyncMandalartCell((oldValue) => ({ ...oldValue, achievementLevel: nextAchievementLevel }));
       }
     }
   }

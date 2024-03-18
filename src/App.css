@@ -58,6 +58,27 @@
   height: 85px !important;
   margin: 0px !important;
   margin-right: -1px !important;
+  border:1px dotted #cecece !important;
+}
+
+.MuiBox-root:has(.mandalart-cell-ponter) {
+  cursor: pointer;
+}
+
+.mandalart-cell-left {
+  border-left:1px solid #000000 !important;
+}
+
+.mandalart-cell-top {
+  border-top:1px solid #000000 !important;
+}
+
+.mandalart-cell-right {
+  border-right:1px solid #000000 !important;
+}
+
+.mandalart-cell-bottom {
+  border-bottom:1px solid #000000 !important;
 }
 
 .mandalart-cell textarea {
@@ -67,16 +88,33 @@
 .mandalart-cell div {
   border-radius: 0px !important;
   height: 85px !important;
+  
 }
 
 .center-cell {
-  background-color: #CCE5FF;
+  background-color: #f1f5f9;
 }
 
-.center-achievement-cell {
-  background-color: #E3C800;
+.achievement-cell-level-1 {
+  background-color: #C6E0B4;
+  color: #C6E0B4;
 }
 
-.achievement-cell {
-  background-color: #FFFF88;
+.achievement-cell-level-2 {
+  background-color: #FFE699;
+  color: #FFE699;
+}
+
+.achievement-cell-level-3 {
+  background-color: #f4ba94;
+  color: #f4ba94;
+}
+
+.explanatory-note-grid {
+  padding: 7px;
+  font-size: 0.7rem;
+  display: 'flex';
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
 }

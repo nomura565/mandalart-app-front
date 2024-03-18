@@ -21,7 +21,7 @@ import { sha256 } from 'js-sha256';
 import LoginIcon from '@mui/icons-material/Login';
 
 import { AUTHOR, MESSAGE, API_URL, THEME } from './../components/Const';
-import { isNullOrEmpty, setSession } from './../components/CommonFunc';
+import { isNullOrEmpty, setSession, translateNewLine } from './../components/CommonFunc';
 import Progress from './../components/Progress';
 import { 
   isLoadingAtom
@@ -143,11 +143,11 @@ function Login() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.light' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Mandalart App
+            {MESSAGE.TITLE}
           </Typography>
           <Box component="form" noValidate onSubmit={onSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
@@ -187,14 +187,13 @@ function Login() {
               disabled={isLoading}
               startIcon={<LoginIcon />}
             >
-              Login
+              {MESSAGE.LOGIN}
             </Button>
             <Progress/>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="#" variant="body2">
-                  Don't have an account? 
-                  Please contact the administrator.
+                  {MESSAGE.LOGIN_REMARKS}
                 </Link>
               </Grid>
             </Grid>
