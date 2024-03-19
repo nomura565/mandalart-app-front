@@ -61,7 +61,7 @@
   border:1px dotted #cecece !important;
 }
 
-.MuiBox-root:has(.mandalart-cell-ponter) {
+.MuiBox-root:has(.mandalart-cell-pointer) {
   cursor: pointer;
 }
 
@@ -108,6 +108,48 @@
 .achievement-cell-level-3 {
   background-color: #f4ba94;
   color: #f4ba94;
+}
+
+/* ボタンのアニメーション */
+@keyframes grow-level-1 {
+  0% {
+    background-color:#C6E0B4;
+  }
+  100% {
+    background-color:#a4bc93;
+  }
+}
+
+.achievement-cell-grow-level-1 {
+  animation: grow-level-1 0.5s ease infinite alternate;
+}
+
+/* ボタンのアニメーション */
+@keyframes grow-level-2 {
+  0% {
+    background-color:#FFE699;
+  }
+  100% {
+    background-color:#cdb879;
+  }
+}
+
+.achievement-cell-grow-level-2 {
+  animation: grow-level-2 0.5s ease infinite alternate;
+}
+
+/* ボタンのアニメーション */
+@keyframes grow-level-3 {
+  0% {
+    background-color:#f4ba94;
+  }
+  100% {
+    background-color:#cb9b7b;
+  }
+}
+
+.achievement-cell-grow-level-3 {
+  animation: grow-level-3 0.5s ease infinite alternate;
 }
 
 .explanatory-note-grid {

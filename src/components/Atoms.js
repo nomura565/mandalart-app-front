@@ -21,6 +21,7 @@ export const initMandalartCell = {
   key: ''
   , achievementLevel: 0
   , textFieldValue: ''
+  , isGrow: false
 };
 
 let mandalartCellList = [];

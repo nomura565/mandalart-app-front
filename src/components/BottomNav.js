@@ -7,23 +7,33 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { useAtom } from 'jotai';
 import Tooltip from '@mui/material/Tooltip';
+import { useState } from 'react';
+import { MESSAGE } from './../components/Const';
 
 import { 
   bottomNavValueAtom
-  , textFieldDisabledAtom
   , whenAchievementAtom
   , targetMessageAtom
+  , growthMessageAtom
    } from './../components/Atoms';
 
 const BottomNav = (props) => {
   const [bottomNavValue, setBottomNavValue] = useAtom(bottomNavValueAtom);
-  const [textFieldDisabled, setTextFieldDisabled] = useAtom(textFieldDisabledAtom);
   const [whenAchievement, setWhenAchievement] = useAtom(whenAchievementAtom);
   const [targetMessage, setTargetMessage] = useAtom(targetMessageAtom);
+  const [growthMessageOpen, setgrowthMessageOpen] = useState(false);
 
   /** マンダラート機能変更 */
   const bottomNavChange = (e, newValue) => {
     props.bottomNavChange(newValue);
+  }
+
+  const growthRecordMouseEnter = () => {
+    setgrowthMessageOpen(true);
+  }
+
+  const growthRecordMouseLeave = () => {
+    setgrowthMessageOpen(false);
   }
 
   return (
@@ -37,18 +47,29 @@ const BottomNav = (props) => {
           <Tooltip title={whenAchievement} 
             arrow 
             open={true}
-            placement="left"
+            placement="top"
           >
-            <BottomNavigationAction label="実績入力" icon={<PaletteIcon />} />
+            <BottomNavigationAction label={MESSAGE.ACHIEVEMENT_INPUT} icon={<PaletteIcon />} />
           </Tooltip>
           <Tooltip title={targetMessage} 
             arrow 
             open={true}
             placement="top"
           >
-            <BottomNavigationAction label="目標登録" icon={<DrawIcon />} />
+            <BottomNavigationAction label={MESSAGE.TARGET_INPUT}  icon={<DrawIcon />} />
           </Tooltip>
-          <BottomNavigationAction label="成長記録" icon={<AccessibilityNewIcon />} />
+          <Tooltip title={MESSAGE.GROWTH_MESSAGE} 
+            arrow 
+            placement="bottom"
+            open={growthMessageOpen && bottomNavValue == 2}
+          >
+            <BottomNavigationAction 
+              onMouseEnter={growthRecordMouseEnter}
+              onMouseLeave={growthRecordMouseLeave}
+              label={MESSAGE.GROWTH_RECORD}  
+              icon={<AccessibilityNewIcon />} 
+            />
+          </Tooltip>
         </BottomNavigation>
       </Box>
     </Paper>

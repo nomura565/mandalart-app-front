@@ -36,10 +36,10 @@ export const MESSAGE = {
   SAVE_DIALOG_CONTENT: "画面上の目標と実績を{0}のデータとして保存します。",
   SAVE_SUCCESS: "目標と実績を保存しました。",
   SELECT_USER_LABEL: "ユーザ選択",
-  SELECT_YM_LABEL: "年月選択",
+  SELECT_YM_LABEL: "比較する年月",
   COMPARE: "比較",
   SHOW: "表示",
-  WHEN_ACHIEVEMENT: "{0}の実績",
+  WHEN_ACHIEVEMENT: "{0}の実績を表示中",
   NO_ACHIEVEMENT: "実績の登録なし",
   TARGET_MESSAGE: "目標の登録がまだされていません",
   ACHIEVEMENT_LEVEL_1: "意識し始めた",
@@ -49,6 +49,10 @@ export const MESSAGE = {
   LOGIN: "Login",
   LOGOUT: "Logout",
   TITLE: "Mandalart App",
+  ACHIEVEMENT_INPUT: "実績入力",
+  TARGET_INPUT: "目標登録",
+  GROWTH_RECORD: "成長記録",
+  GROWTH_MESSAGE: "点滅セルは比較している年月から成長しています！",
 }
 
 export const BASE_URL = 'http://localhost:9050/api/';

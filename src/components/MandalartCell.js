@@ -5,6 +5,7 @@ import {
   textFieldDisabledAtom
   , bottomNavValueAtom
   , mandalartCellListAtomsAtom
+  , selectYmFuncAtom
    } from './../components/Atoms';
 
 const MandalartCell = (props) => {
@@ -82,6 +83,13 @@ const MandalartCell = (props) => {
     isRight = true;
   }
 
+  const [bottomNavValue, setBottomNavValue] = useAtom(bottomNavValueAtom);
+  const [textFieldDisabled, setTextFieldDisabled] = useAtom(textFieldDisabledAtom);
+  const [mandalartCellList, setMandalartCellList] = useAtom(mandalartCellListAtomsAtom);
+  const [mandalartCell, setMandalartCell] = useAtom(mandalartCellList[props.idx]);
+  const [syncMandalartCell, setSyncMandalartCell] = useAtom(mandalartCellList[syncCellIdx]);
+  const [selectYmFunc, setSelectYmFunc] = useAtom(selectYmFuncAtom);
+
   let cellClass = "mandalart-cell";
   if(isTop) cellClass = cellClass + " " + "mandalart-cell-top";
   if(isBottom) cellClass = cellClass + " " + "mandalart-cell-bottom";
@@ -89,21 +97,19 @@ const MandalartCell = (props) => {
   if(isRight) cellClass = cellClass + " " + "mandalart-cell-right";
 
   const centerCellClass = cellClass + " center-cell";
-  const achievementCellClass = cellClass + " achievement-cell-level-";
+  //比較してレベルが違うセルを点滅させるのは以下の時
+  //比較してレベルが違う
+  //成長記録タブが押下されている
+  //比較タブが押下されている
+  let achievementCellClass = (mandalartCell.isGrow && bottomNavValue === 2 && selectYmFunc === 0) ? cellClass + " achievement-cell-grow-level-" : cellClass + " achievement-cell-level-";
 
   if(syncCellIdx !== 0) isSync = true;
-
-  const [bottomNavValue, setBottomNavValue] = useAtom(bottomNavValueAtom);
-  const [textFieldDisabled, setTextFieldDisabled] = useAtom(textFieldDisabledAtom);
-  const [mandalartCellList, setMandalartCellList] = useAtom(mandalartCellListAtomsAtom);
-  const [mandalartCell, setMandalartCell] = useAtom(mandalartCellList[props.idx]);
-  const [syncMandalartCell, setSyncMandalartCell] = useAtom(mandalartCellList[syncCellIdx]);
 
   /** セルクラス取得 */
   const getCellClass= () => {
     const defaultClass = (props.isCenter ) ? centerCellClass : cellClass;
     let afterClass = achievementCellClass + mandalartCell.achievementLevel;
-    if(bottomNavValue == 0) afterClass = afterClass + " mandalart-cell-ponter";
+    if(bottomNavValue == 0) afterClass = afterClass + " mandalart-cell-pointer";
 
     if(mandalartCell.achievementLevel === 0){
       afterClass = defaultClass;

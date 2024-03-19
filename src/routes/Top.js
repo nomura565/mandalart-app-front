@@ -49,6 +49,7 @@ import {
 
 function Top() {
   const defaultTheme = createTheme(THEME);
+  const currentYyyymm = formatDateToYM(new Date());
 
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
 
@@ -201,6 +202,10 @@ function Top() {
     }else{
       setTextFieldDisabled('none');
     }
+
+    if(newValue === 2){
+      getMandalart(selectUserId, selectYm);
+    }
   }
 
   /** 保存処理 */
@@ -209,7 +214,7 @@ function Top() {
     console.log("saveExecute");
     let sendData = {
       user_id: selectUserId
-      , yyyymm: formatDateToYM(new Date())
+      , yyyymm: currentYyyymm
 
     };
     getMandalartCellArrayList().map((cell, idx) => {
@@ -289,31 +294,47 @@ function Top() {
   }
 
   /** マンダラート取得 */
-  const getMandalart = (_userId) => {
+  const getMandalart = (_userId, _yyyymm) => {
     setErrorMessage("");
     setIsLoading(true);
     const sendUserId = (_userId) ? _userId : selectUserId;
+    const sendYyyymm = (_yyyymm) ? _yyyymm : false;
     axios
       .post(API_URL.GET_MANDALART, {
         user_id: sendUserId
-      , yyyymm: false
+      , yyyymm: sendYyyymm
       })
       .then((response) => {
         setIsLoading(false);
         if (response.status === 200) {
           console.log(response.data);
           let SetMandalartCellArrayList = getSetMandalartCellArrayList();
-          SetMandalartCellArrayList.map((setCell, idx) => {
-            const cell = {
-              key: idx
-              , achievementLevel: response.data[`$achievement_level_${idx}`]
-              , textFieldValue: response.data[`$target_${idx}`]
-            }
-            setCell(cell);
-          });
-          setWhenAchievement(format(MESSAGE.WHEN_ACHIEVEMENT, response.data.yyyymm));
-          setTargetMessage("");
-          bottomNavChange(0);
+          if(!sendYyyymm) {
+            SetMandalartCellArrayList.map((setCell, idx) => {
+              let cell = getObjectCopy(initMandalartCell);
+
+              cell["key"] = idx;
+              cell["achievementLevel"] = response.data[`achievement_level_${idx}`];
+              cell["textFieldValue"] = response.data[`target_${idx}`];
+
+              if(idx == 30 || idx == 60){
+                //cell["isGrow"] = false;
+              }
+              setCell(cell);
+            });
+            setWhenAchievement(format(MESSAGE.WHEN_ACHIEVEMENT, response.data.yyyymm));
+            setTargetMessage("");
+            bottomNavChange(0);
+          } else {
+            let mandalartCellArrayList = getMandalartCellArrayList();
+            SetMandalartCellArrayList.map((setCell, idx) => {
+              if(mandalartCellArrayList[idx].achievementLevel !== response.data[`achievement_level_${idx}`]){
+                setCell((oldValue) => ({ ...oldValue, isGrow: true }));
+              } else {
+                setCell((oldValue) => ({ ...oldValue, isGrow: false }));
+              }
+            });
+          }
         }else{
           return;
         }
@@ -323,9 +344,17 @@ function Top() {
         setIsLoading(false);
         //データなしは正常として扱う
         if(error.response?.status === 404){
-          clearAllExecute();
-          setTargetMessage(MESSAGE.TARGET_MESSAGE);
-          bottomNavChange(1);
+          if(!sendYyyymm) {
+            clearAllExecute();
+            setTargetMessage(MESSAGE.TARGET_MESSAGE);
+            setWhenAchievement("");
+            bottomNavChange(1);
+          } else {
+            let SetMandalartCellArrayList = getSetMandalartCellArrayList();
+            SetMandalartCellArrayList.map((setCell, idx) => {
+              setCell((oldValue) => ({ ...oldValue, isGrow: false }));
+            });
+          }
         } else {
           setErrorMessage(error.message);
         }
@@ -342,11 +371,12 @@ function Top() {
   /** 選択年月変更 */
   const selectYmChange = (e) => {
     setSelectYm(e.target.value);
+    getMandalart(selectUserId, e.target.value);
   }
 
   /** 選択年月機能変更 */
   const selectYmFuncChange = (e, newAlignment) => {
-    setSelectYmFunc(newAlignment);
+    if(newAlignment !== null) setSelectYmFunc(newAlignment);
   }
 
   return (
@@ -374,7 +404,7 @@ function Top() {
                 label={MESSAGE.SELECT_USER_LABEL}
                 onChange={selectUserIdChange}
                 value={selectUserId}
-                disabled={!isAdmin}
+                disabled={!isAdmin || bottomNavValue === 2}
               >
                 {userList.map((user) => {
                   return (
@@ -383,7 +413,12 @@ function Top() {
                 })}
               </Select>
             </FormControl>
-            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+            <Box
+              sx={{
+                width: "280px"
+              }}
+            ></Box>
+            <FormControl sx={{ m: 1 }} size="small">
               {bottomNavValue === 2
               ?
               <div>
@@ -410,7 +445,7 @@ function Top() {
               }
             </FormControl>
             
-            <FormControl className="toggle-button" sx={{ m: 1, minWidth: 120 }} size="small">
+            <FormControl className="toggle-button" sx={{ m: 1 }} size="small">
               {bottomNavValue === 2
               ?
               <ToggleButtonGroup
