@@ -22,6 +22,10 @@ export const initMandalartCell = {
   , achievementLevel: 0
   , textFieldValue: ''
   , isGrow: false
+  , compareAchievementLevel: 0
+  , compareTextFieldValue: ''
+  , tmpAchievementLevel: 0
+  , tmpTextFieldValue: ''
 };
 
 let mandalartCellList = [];

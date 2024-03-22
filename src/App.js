@@ -5,6 +5,7 @@ import { useAtom } from 'jotai';
 
 
 import Login from './routes/Login';
+import SignUp from './routes/SignUp';
 import Top from './routes/Top';
 import { 
   getSession
@@ -30,6 +31,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/top" element={<PrivateRoute><Top /></PrivateRoute>} />
+          <Route path="/SignUp" element={<SignUp />} />
         </Routes>
       </BrowserRouter>
     </div>

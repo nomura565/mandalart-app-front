@@ -16,7 +16,7 @@ const SuccessMessage = (props) => {
           marginTop: 2,
           position: 'fixed',
           top:0,
-          width: "calc(68%)",
+          width: (props.width) ? props.width : "calc(68%)",
           zIndex:1000,
           opacity:0.8
         }}

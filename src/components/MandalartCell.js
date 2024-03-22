@@ -121,8 +121,10 @@ const MandalartCell = (props) => {
     if(bottomNavValue === 0){
       const nextAchievementLevel = (mandalartCell.achievementLevel === 3) ? 0 : mandalartCell.achievementLevel + 1;
       setMandalartCell((oldValue) => ({ ...oldValue, achievementLevel: nextAchievementLevel }));
+      setMandalartCell((oldValue) => ({ ...oldValue, tmpAchievementLevel: nextAchievementLevel }));
       if(isSync){
         setSyncMandalartCell((oldValue) => ({ ...oldValue, achievementLevel: nextAchievementLevel }));
+        setSyncMandalartCell((oldValue) => ({ ...oldValue, tmpAchievementLevel: nextAchievementLevel }));
       }
     }
   }
@@ -130,8 +132,10 @@ const MandalartCell = (props) => {
   /* テキストフィールド変更 */
   const textFieldChange = (e) => {
     setMandalartCell((oldValue) => ({ ...oldValue, textFieldValue: e.target.value }));
+    setMandalartCell((oldValue) => ({ ...oldValue, tmpTextFieldValue: e.target.value }));
     if(isSync){
       setSyncMandalartCell((oldValue) => ({ ...oldValue, textFieldValue: e.target.value }));
+      setSyncMandalartCell((oldValue) => ({ ...oldValue, tmpTextFieldValue: e.target.value }));
     }
   };
   

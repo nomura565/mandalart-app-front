@@ -24,8 +24,13 @@ export const ROLE = {
 /** メッセージ */
 export const MESSAGE = {
   USERID_EMPTY: "ユーザIDを入力してください",
+  USERNAME_EMPTY: "ユーザ名を入力してください",
   PASSWORD_EMPTY: "パスワードを入力してください",
+  CONFIRM_PASSWORD_EMPTY: "パスワード（確認用）を入力してください",
+  CONFIRM_PASSWORD_INVALID: "パスワード（確認用）が一致しません",
+  USERID_INVALID: "ユーザIDに不適切な文字が含まれています",
   LOGIN_FAIL: "ユーザIDもしくはパスワードが間違っています",
+  USERID_DUPLICATE: "既に使用されているユーザIDです",
   CANCEL: "キャンセル",
   EXECUTE: "実行",
   CLEAR_ALL_DIALOG_TITLE: "目標と実績をオールクリアしますか？",
@@ -45,7 +50,7 @@ export const MESSAGE = {
   ACHIEVEMENT_LEVEL_1: "意識し始めた",
   ACHIEVEMENT_LEVEL_2: "意識できるようになった",
   ACHIEVEMENT_LEVEL_3: "常に意識できている",
-  LOGIN_REMARKS: "Don't have an account? Please contact the administrator.",
+  LOGIN_REMARKS: "Don't have an account? Please Sign Up",
   LOGIN: "Login",
   LOGOUT: "Logout",
   TITLE: "Mandalart App",
@@ -53,6 +58,9 @@ export const MESSAGE = {
   TARGET_INPUT: "目標登録",
   GROWTH_RECORD: "成長記録",
   GROWTH_MESSAGE: "点滅セルは比較している年月から成長しています！",
+  SIGNUP: "Create an account",
+  BACK_TO_TOP: "Back to Top",
+  SIGN_UP_SUCCESS: "アカウントを作成しました。",
 }
 
 export const BASE_URL = 'http://localhost:9050/api/';
@@ -60,6 +68,8 @@ export const BASE_URL = 'http://localhost:9050/api/';
 export const API_URL = {
   LOGIN: BASE_URL + "users/login",
   GET_USER_LIST: BASE_URL + "users/getUserList",
+  GET_USER: BASE_URL + "users/getUser",
+  CREATE_USER: BASE_URL + "users/createUser",
   SAVE_MANDALART: BASE_URL + "mandalart/saveMandalart",
   GET_MANDALART: BASE_URL + "mandalart/getMandalart",
 }

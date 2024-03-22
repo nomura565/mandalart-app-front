@@ -8,7 +8,8 @@ import Box from '@mui/material/Box';
 import { useAtom } from 'jotai';
 import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
-import { MESSAGE } from './../components/Const';
+import { MESSAGE, ROLE } from './../components/Const';
+import { getSession } from './../components/CommonFunc';
 
 import { 
   bottomNavValueAtom
@@ -22,6 +23,7 @@ const BottomNav = (props) => {
   const [whenAchievement, setWhenAchievement] = useAtom(whenAchievementAtom);
   const [targetMessage, setTargetMessage] = useAtom(targetMessageAtom);
   const [growthMessageOpen, setgrowthMessageOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState((getSession().role_id === ROLE.ADMIN) ? true : false);
 
   /** マンダラート機能変更 */
   const bottomNavChange = (e, newValue) => {
@@ -44,20 +46,30 @@ const BottomNav = (props) => {
           value={bottomNavValue}
           onChange={bottomNavChange}
         >
-          <Tooltip title={whenAchievement} 
-            arrow 
-            open={true}
-            placement="top"
-          >
-            <BottomNavigationAction label={MESSAGE.ACHIEVEMENT_INPUT} icon={<PaletteIcon />} />
-          </Tooltip>
-          <Tooltip title={targetMessage} 
-            arrow 
-            open={true}
-            placement="top"
-          >
-            <BottomNavigationAction label={MESSAGE.TARGET_INPUT}  icon={<DrawIcon />} />
-          </Tooltip>
+          {!isAdmin
+            ?
+            <Tooltip title={whenAchievement} 
+              arrow 
+              open={true}
+              placement="top"
+            >
+              <BottomNavigationAction label={MESSAGE.ACHIEVEMENT_INPUT} icon={<PaletteIcon />} />
+            </Tooltip>
+            :
+            ""
+          }
+          {!isAdmin
+            ?
+            <Tooltip title={targetMessage} 
+              arrow 
+              open={true}
+              placement="top"
+            >
+              <BottomNavigationAction label={MESSAGE.TARGET_INPUT}  icon={<DrawIcon />} />
+            </Tooltip>
+            :
+            ""
+          }
           <Tooltip title={MESSAGE.GROWTH_MESSAGE} 
             arrow 
             placement="bottom"

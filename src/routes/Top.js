@@ -57,6 +57,8 @@ function Top() {
   const [selectYm, setSelectYm] = useState(addMonthDateToYM(new Date(), -1));
   const [isAdmin, setIsAdmin] = useState((getSession().role_id === ROLE.ADMIN) ? true : false);
   const [userId, setUserId] = useState(getSession().user_id);
+  //比較する年月左の調整用
+  const AdjustWidth = (isAdmin) ? "303px" : "470px";
 
   const [selectYmFunc, setSelectYmFunc] = useAtom(selectYmFuncAtom);
   const [errorMessage, setErrorMessage] = useAtom(errorMessageAtom);
@@ -204,14 +206,24 @@ function Top() {
     }
 
     if(newValue === 2){
-      getMandalart(selectUserId, selectYm);
+      getMandalart(selectUserId, selectYm, 0);
+      setSelectYmFunc(0);
+    } else {
+      //成長記録→他のタブに移動したときに現在の実績に戻す
+      if(bottomNavValue == 2) {
+        let mandalartCellArrayList = getMandalartCellArrayList();
+        let SetMandalartCellArrayList = getSetMandalartCellArrayList();
+        SetMandalartCellArrayList.map((setCell, idx) => {
+          setCell((oldValue) => ({ ...oldValue, achievementLevel: mandalartCellArrayList[idx].tmpAchievementLevel }));
+          setCell((oldValue) => ({ ...oldValue, textFieldValue: mandalartCellArrayList[idx].tmpTextFieldValue }));
+        });
+      }
     }
   }
 
   /** 保存処理 */
   const saveExecute = () => {
     setErrorMessage("");
-    console.log("saveExecute");
     let sendData = {
       user_id: selectUserId
       , yyyymm: currentYyyymm
@@ -221,7 +233,6 @@ function Top() {
       sendData[`achievement_level_${idx}`] = cell.achievementLevel;
       sendData[`target_${idx}`] = cell.textFieldValue;
     });
-    //console.log(sendData);
 
     setIsLoading(true);
 
@@ -230,7 +241,6 @@ function Top() {
       .then((response) => {
         setIsLoading(false);
         if (response.status === 200) {
-          console.log("success");
           setSuccessMessage(MESSAGE.SAVE_SUCCESS);
           getMandalart();
           setTimeout(() => {
@@ -258,7 +268,14 @@ function Top() {
   const [userList, setUserList] = useState([]);
 
   useEffect(() => {
-    //読み込み時オフィス一覧を取得する
+    //読み込み時
+    clearAllExecute();
+    setSelectUserId("");
+    setBottomNavValue((isAdmin) ? 2 : 0);
+    setSelectYmFunc(0);
+    setErrorMessage("");
+    setSuccessMessage("");
+    setWhenAchievement("");
     getUserList();
   }, [])
 
@@ -294,12 +311,13 @@ function Top() {
   }
 
   /** マンダラート取得 */
-  const getMandalart = (_userId, _yyyymm) => {
+  const getMandalart = (_userId, _yyyymm, _selectYmFunc) => {
     setErrorMessage("");
     setIsLoading(true);
     const sendUserId = (_userId) ? _userId : selectUserId;
     const sendYyyymm = (_yyyymm) ? _yyyymm : false;
-    axios
+    const sendSelectYmFunc = (typeof(_selectYmFunc) !== "undefined") ? _selectYmFunc : selectYmFunc;
+    return axios
       .post(API_URL.GET_MANDALART, {
         user_id: sendUserId
       , yyyymm: sendYyyymm
@@ -307,31 +325,41 @@ function Top() {
       .then((response) => {
         setIsLoading(false);
         if (response.status === 200) {
-          console.log(response.data);
           let SetMandalartCellArrayList = getSetMandalartCellArrayList();
           if(!sendYyyymm) {
             SetMandalartCellArrayList.map((setCell, idx) => {
               let cell = getObjectCopy(initMandalartCell);
 
-              cell["key"] = idx;
+              cell["key"] = response.data[`key`];
               cell["achievementLevel"] = response.data[`achievement_level_${idx}`];
               cell["textFieldValue"] = response.data[`target_${idx}`];
+              cell["tmpAchievementLevel"] = response.data[`achievement_level_${idx}`];
+              cell["tmpTextFieldValue"] = response.data[`target_${idx}`];
 
-              if(idx == 30 || idx == 60){
-                //cell["isGrow"] = false;
-              }
               setCell(cell);
             });
             setWhenAchievement(format(MESSAGE.WHEN_ACHIEVEMENT, response.data.yyyymm));
             setTargetMessage("");
-            bottomNavChange(0);
+            //bottomNavChange(0);
           } else {
+            //年月比較でマンダラート取得したパターン
             let mandalartCellArrayList = getMandalartCellArrayList();
             SetMandalartCellArrayList.map((setCell, idx) => {
               if(mandalartCellArrayList[idx].achievementLevel !== response.data[`achievement_level_${idx}`]){
                 setCell((oldValue) => ({ ...oldValue, isGrow: true }));
               } else {
                 setCell((oldValue) => ({ ...oldValue, isGrow: false }));
+              }
+              setCell((oldValue) => ({ ...oldValue, compareAchievementLevel: response.data[`achievement_level_${idx}`] }));
+              setCell((oldValue) => ({ ...oldValue, compareTextFieldValue: response.data[`target_${idx}`] }));
+              //表示押下
+              if(sendSelectYmFunc === 1){
+                setCell((oldValue) => ({ ...oldValue, achievementLevel: response.data[`achievement_level_${idx}`] }));
+                setCell((oldValue) => ({ ...oldValue, textFieldValue: response.data[`target_${idx}`] }));
+                setCell((oldValue) => ({ ...oldValue, isGrow: false }));
+              } else {
+                setCell((oldValue) => ({ ...oldValue, achievementLevel: mandalartCellArrayList[idx].tmpAchievementLevel }));
+                setCell((oldValue) => ({ ...oldValue, textFieldValue: mandalartCellArrayList[idx].tmpTextFieldValue }));
               }
             });
           }
@@ -348,11 +376,19 @@ function Top() {
             clearAllExecute();
             setTargetMessage(MESSAGE.TARGET_MESSAGE);
             setWhenAchievement("");
-            bottomNavChange(1);
+            //bottomNavChange(1);
           } else {
+            let mandalartCellArrayList = getMandalartCellArrayList();
             let SetMandalartCellArrayList = getSetMandalartCellArrayList();
             SetMandalartCellArrayList.map((setCell, idx) => {
               setCell((oldValue) => ({ ...oldValue, isGrow: false }));
+              setCell((oldValue) => ({ ...oldValue, compareAchievementLevel: 0 }));
+              setCell((oldValue) => ({ ...oldValue, compareTextFieldValue: "" }));
+              //表示押下
+              if(sendSelectYmFunc === 1){
+                setCell((oldValue) => ({ ...oldValue, achievementLevel: 0 }));
+                setCell((oldValue) => ({ ...oldValue, textFieldValue: "" }));
+              }
             });
           }
         } else {
@@ -365,7 +401,21 @@ function Top() {
   /** 選択ユーザ変更 */
   const selectUserIdChange = (e) => {
     setSelectUserId(e.target.value);
-    getMandalart(e.target.value);
+    let _yyyymm = false;
+    //成長記録が選択　かつ　表示タブが押下されている　かつ　比較する年月が選択されている　なら比較する年月のデータを取得
+    if(bottomNavValue === 2 && selectYmFunc === 1 && selectYm !== ""){
+      _yyyymm = selectYm;
+    }
+    //管理者は最新の実績と比較する年月を取得する
+    if(isAdmin){
+      getMandalart(e.target.value)
+      .then((response) => {
+        getMandalart(e.target.value, _yyyymm)
+      });
+    } else {
+      getMandalart(e.target.value, _yyyymm);
+    }
+    
   }
 
   /** 選択年月変更 */
@@ -376,7 +426,10 @@ function Top() {
 
   /** 選択年月機能変更 */
   const selectYmFuncChange = (e, newAlignment) => {
-    if(newAlignment !== null) setSelectYmFunc(newAlignment);
+    if(newAlignment !== null) {
+      setSelectYmFunc(newAlignment);
+      getMandalart(selectUserId, selectYm, newAlignment);
+    }
   }
 
   return (
@@ -396,28 +449,30 @@ function Top() {
           }}
         >
           <Grid container spacing={2}>
-            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-              <InputLabel id="select-user-label">{MESSAGE.SELECT_USER_LABEL}</InputLabel>
-              <Select
-                labelId="select-user-label"
-                id="select-user"
-                label={MESSAGE.SELECT_USER_LABEL}
-                onChange={selectUserIdChange}
-                value={selectUserId}
-                disabled={!isAdmin || bottomNavValue === 2}
-              >
-                {userList.map((user) => {
-                  return (
-                    <MenuItem key={user.user_id} value={user.user_id}>{user.user_name}</MenuItem>
-                    );
-                })}
-              </Select>
-            </FormControl>
             <Box
               sx={{
-                width: "280px"
+                width: AdjustWidth,
+                display: 'flex',
               }}
-            ></Box>
+            >
+              <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                <InputLabel id="select-user-label">{MESSAGE.SELECT_USER_LABEL}</InputLabel>
+                <Select
+                  labelId="select-user-label"
+                  id="select-user"
+                  label={MESSAGE.SELECT_USER_LABEL}
+                  onChange={selectUserIdChange}
+                  value={selectUserId}
+                  disabled={!isAdmin}
+                >
+                  {userList.map((user) => {
+                    return (
+                      <MenuItem key={user.user_id} value={user.user_id}>{user.user_name}</MenuItem>
+                      );
+                  })}
+                </Select>
+              </FormControl>
+            </Box>
             <FormControl sx={{ m: 1 }} size="small">
               {bottomNavValue === 2
               ?
