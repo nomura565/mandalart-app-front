@@ -46,6 +46,8 @@ import {
   , targetMessageAtom
   , whenDataAtom
   , selectYmAtom
+  , isSuccessAtom
+  , saveDialogOpenAtom
    } from './../components/Atoms';
 
 function Top() {
@@ -61,9 +63,10 @@ function Top() {
   //比較する年月左の調整用
   const AdjustWidth = "470px";
 
+  const setSaveDialogOpen = useSetAtom(saveDialogOpenAtom);
   const [selectYmFunc, setSelectYmFunc] = useAtom(selectYmFuncAtom);
   const setErrorMessage = useSetAtom(errorMessageAtom);
-  const setSuccessMessage = useSetAtom(successMessageAtom);
+  const setIsSuccess = useSetAtom(isSuccessAtom);
   const setWhenAchievement = useSetAtom(whenAchievementAtom);
   const setWhenData = useSetAtom(whenDataAtom);
   const [bottomNavValue, setBottomNavValue] = useAtom(bottomNavValueAtom);
@@ -244,17 +247,19 @@ function Top() {
       .then((response) => {
         setIsLoading(false);
         if (response.status === 200) {
-          setSuccessMessage(MESSAGE.SAVE_SUCCESS);
+          setIsSuccess(true);
           getMandalart();
           setTimeout(() => {
-            setSuccessMessage("");
-          }, "2000");
+            setIsSuccess(false);
+            setSaveDialogOpen(false);
+          }, "1000");
         }
 
       })
       .catch((error) => {
         setIsLoading(false);
         setErrorMessage(error.message);
+        setSaveDialogOpen(false);
         return;
       });
 
@@ -277,7 +282,7 @@ function Top() {
     setBottomNavValue((isAdmin) ? 2 : 0);
     setSelectYmFunc(0);
     setErrorMessage("");
-    setSuccessMessage("");
+    setIsSuccess(false);
     setWhenAchievement("");
     getUserList();
   }

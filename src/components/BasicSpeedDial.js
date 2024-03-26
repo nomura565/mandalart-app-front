@@ -4,7 +4,7 @@ import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import SaveIcon from '@mui/icons-material/Save';
-import ClearAllIcon from '@mui/icons-material/ClearAll';
+import DeleteIcon from '@mui/icons-material/Delete';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import { useAtom, useAtomValue } from 'jotai';
 import BasicDialog from './BasicDialog';
@@ -78,9 +78,9 @@ const BasicSpeedDial = (props) => {
   const yyyymm = formatDateToYM(new Date());
 
   const actions = [
-    { icon: <SaveIcon />, name: format(MESSAGE.SAVE_SPEED_DIAL, yyyymm), onClick:saveDialogOpenExecute },
+    { icon: <SaveIcon  color='primary'/>, name: format(MESSAGE.SAVE_SPEED_DIAL, yyyymm), onClick:saveDialogOpenExecute },
     { icon: <CameraAltIcon />, name: MESSAGE.OUTPUT_SPEED_DIAL, onClick:outputExecute },
-    { icon: <ClearAllIcon />, name: MESSAGE.CLEAR_ALL_SPEED_DIAL, onClick:clearAllDialogOpenExecute },
+    { icon: <DeleteIcon color='error'/>, name: MESSAGE.CLEAR_ALL_SPEED_DIAL, onClick:clearAllDialogOpenExecute },
   ];
   return (
     <Box sx={{ transform: 'translateZ(0px)', flexGrow: 1 }}>
