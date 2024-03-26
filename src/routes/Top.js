@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom, useAtomValue } from 'jotai';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -19,8 +19,8 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { format } from 'react-string-format';
 
 import { MESSAGE, API_URL, SELECT_YYYY_LIST, ROLE, THEME } from './../components/Const';
-import { isNullOrEmpty, getSession, getObjectCopy } from './../components/CommonFunc';
-import { addMonthDateToYM, formatDateToYM } from './../components/FormatDate';
+import { getSession, getObjectCopy, isNull } from './../components/CommonFunc';
+import { formatDateToYM } from './../components/FormatDate';
 
 import Progress from './../components/Progress';
 import MandalartCellRow from './../components/MandalartCellRow';
@@ -34,7 +34,6 @@ import AchievementGauge from './../components/AchievementGauge';
 
 import { 
   isLoadingAtom
-  , loggedInAtom
   , selectYmFuncAtom
   , textFieldDisabledAtom
   , bottomNavValueAtom
@@ -45,30 +44,33 @@ import {
   , successMessageAtom
   , whenAchievementAtom
   , targetMessageAtom
+  , whenDataAtom
+  , selectYmAtom
    } from './../components/Atoms';
 
 function Top() {
   const defaultTheme = createTheme(THEME);
   const currentYyyymm = formatDateToYM(new Date());
 
-  const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
+  const setIsLoading = useSetAtom(isLoadingAtom);
 
   const [selectUserId, setSelectUserId] = useAtom(selectUserIdAtom);
-  const [selectYm, setSelectYm] = useState(addMonthDateToYM(new Date(), -1));
-  const [isAdmin, setIsAdmin] = useState((getSession().role_id === ROLE.ADMIN) ? true : false);
-  const [userId, setUserId] = useState(getSession().user_id);
+  const [selectYm, setSelectYm] = useAtom(selectYmAtom);
+  const [isAdmin] = useState((getSession().role_id === ROLE.ADMIN) ? true : false);
+  const [userId] = useState(getSession().user_id);
   //比較する年月左の調整用
-  const AdjustWidth = (isAdmin) ? "303px" : "470px";
+  const AdjustWidth = "470px";
 
   const [selectYmFunc, setSelectYmFunc] = useAtom(selectYmFuncAtom);
-  const [errorMessage, setErrorMessage] = useAtom(errorMessageAtom);
-  const [successMessage, setSuccessMessage] = useAtom(successMessageAtom);
-  const [whenAchievement, setWhenAchievement] = useAtom(whenAchievementAtom);
+  const setErrorMessage = useSetAtom(errorMessageAtom);
+  const setSuccessMessage = useSetAtom(successMessageAtom);
+  const setWhenAchievement = useSetAtom(whenAchievementAtom);
+  const setWhenData = useSetAtom(whenDataAtom);
   const [bottomNavValue, setBottomNavValue] = useAtom(bottomNavValueAtom);
-  const [targetMessage, setTargetMessage] = useAtom(targetMessageAtom);
-  const [textFieldDisabled, setTextFieldDisabled] = useAtom(textFieldDisabledAtom);
+  const setTargetMessage = useSetAtom(targetMessageAtom);
+  const setTextFieldDisabled = useSetAtom(textFieldDisabledAtom);
 
-  const [mandalartCellList, setMandalartCellList] = useAtom(mandalartCellListAtomsAtom);
+  const mandalartCellList= useAtomValue(mandalartCellListAtomsAtom);
   //愚直に0～81までのatomを作る　愚直すぎるのであくまで暫定
   const [mandalartCell0, setMandalartCell0] = useAtom(mandalartCellList[0]);
   const [mandalartCell1, setMandalartCell1] = useAtom(mandalartCellList[1]);
@@ -198,6 +200,7 @@ function Top() {
 
   /** マンダラート機能変更 */
   const bottomNavChange = (newValue) => {
+    if(isAdmin) return;
     setBottomNavValue(newValue);
     if(newValue === 1){
       setTextFieldDisabled('auto');
@@ -210,10 +213,10 @@ function Top() {
       setSelectYmFunc(0);
     } else {
       //成長記録→他のタブに移動したときに現在の実績に戻す
-      if(bottomNavValue == 2) {
+      if(bottomNavValue === 2) {
         let mandalartCellArrayList = getMandalartCellArrayList();
         let SetMandalartCellArrayList = getSetMandalartCellArrayList();
-        SetMandalartCellArrayList.map((setCell, idx) => {
+        SetMandalartCellArrayList.forEach((setCell, idx) => {
           setCell((oldValue) => ({ ...oldValue, achievementLevel: mandalartCellArrayList[idx].tmpAchievementLevel }));
           setCell((oldValue) => ({ ...oldValue, textFieldValue: mandalartCellArrayList[idx].tmpTextFieldValue }));
         });
@@ -260,15 +263,15 @@ function Top() {
   /** 全てのセルをクリア */
   const clearAllExecute = () => {
     let SetMandalartCellArrayList = getSetMandalartCellArrayList();
-    SetMandalartCellArrayList.map((setCell, idx) => {
+    SetMandalartCellArrayList.forEach((setCell, idx) => {
       setCell(getObjectCopy(initMandalartCell));
     });
   }
 
   const [userList, setUserList] = useState([]);
 
-  useEffect(() => {
-    //読み込み時
+  /** 初期処理 */
+  const initFunc = () => {
     clearAllExecute();
     setSelectUserId("");
     setBottomNavValue((isAdmin) ? 2 : 0);
@@ -277,6 +280,11 @@ function Top() {
     setSuccessMessage("");
     setWhenAchievement("");
     getUserList();
+  }
+
+  useEffect(() => {
+    //読み込み時
+    initFunc();
   }, [])
 
   /** ユーザ一覧取得 */
@@ -316,7 +324,7 @@ function Top() {
     setIsLoading(true);
     const sendUserId = (_userId) ? _userId : selectUserId;
     const sendYyyymm = (_yyyymm) ? _yyyymm : false;
-    const sendSelectYmFunc = (typeof(_selectYmFunc) !== "undefined") ? _selectYmFunc : selectYmFunc;
+    const sendSelectYmFunc = (!isNull(_selectYmFunc)) ? _selectYmFunc : selectYmFunc;
     return axios
       .post(API_URL.GET_MANDALART, {
         user_id: sendUserId
@@ -339,12 +347,13 @@ function Top() {
               setCell(cell);
             });
             setWhenAchievement(format(MESSAGE.WHEN_ACHIEVEMENT, response.data.yyyymm));
+            setWhenData(response.data.yyyymm);
             setTargetMessage("");
             //bottomNavChange(0);
           } else {
             //年月比較でマンダラート取得したパターン
             let mandalartCellArrayList = getMandalartCellArrayList();
-            SetMandalartCellArrayList.map((setCell, idx) => {
+            SetMandalartCellArrayList.forEach((setCell, idx) => {
               if(mandalartCellArrayList[idx].achievementLevel !== response.data[`achievement_level_${idx}`]){
                 setCell((oldValue) => ({ ...oldValue, isGrow: true }));
               } else {
@@ -358,6 +367,10 @@ function Top() {
                 setCell((oldValue) => ({ ...oldValue, textFieldValue: response.data[`target_${idx}`] }));
                 setCell((oldValue) => ({ ...oldValue, isGrow: false }));
               } else {
+                //比較を押下したとき、比較すべき最新データはtmp○○に入っている
+                if(mandalartCellArrayList[idx].achievementLevel !== mandalartCellArrayList[idx].tmpAchievementLevel){
+                  setCell((oldValue) => ({ ...oldValue, isGrow: true }));
+                }
                 setCell((oldValue) => ({ ...oldValue, achievementLevel: mandalartCellArrayList[idx].tmpAchievementLevel }));
                 setCell((oldValue) => ({ ...oldValue, textFieldValue: mandalartCellArrayList[idx].tmpTextFieldValue }));
               }
@@ -376,11 +389,11 @@ function Top() {
             clearAllExecute();
             setTargetMessage(MESSAGE.TARGET_MESSAGE);
             setWhenAchievement("");
+            setWhenData(MESSAGE.INPUT_YET);
             //bottomNavChange(1);
           } else {
-            let mandalartCellArrayList = getMandalartCellArrayList();
             let SetMandalartCellArrayList = getSetMandalartCellArrayList();
-            SetMandalartCellArrayList.map((setCell, idx) => {
+            SetMandalartCellArrayList.forEach((setCell, idx) => {
               setCell((oldValue) => ({ ...oldValue, isGrow: false }));
               setCell((oldValue) => ({ ...oldValue, compareAchievementLevel: 0 }));
               setCell((oldValue) => ({ ...oldValue, compareTextFieldValue: "" }));
@@ -477,7 +490,12 @@ function Top() {
               {bottomNavValue === 2
               ?
               <div>
-              <InputLabel id="select-ym-label">{MESSAGE.SELECT_YM_LABEL}</InputLabel>
+              <InputLabel 
+                id="select-ym-label"
+                error={(selectYmFunc !== 0)}
+              >
+                  {(selectYmFunc === 0) ? MESSAGE.SELECT_YM_LABEL : MESSAGE.SELECT_YM_LABEL2}
+              </InputLabel>
               <Select
                 labelId="select-ym-label"
                 id="select-ym"
@@ -528,6 +546,7 @@ function Top() {
           }}
         ></Box>
         <Box
+          id="WholeMandalart"
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -544,10 +563,16 @@ function Top() {
           <MandalartCellRow rowIndex={7} />
           <MandalartCellRow rowIndex={8} />
         </Box>
-        <BasicSpeedDial 
-          clearAllExecute={clearAllExecute}
-          saveExecute={saveExecute}
-        />
+        {!isAdmin
+        ?
+          <BasicSpeedDial 
+            clearAllExecute={clearAllExecute}
+            saveExecute={saveExecute}
+            element={document.getElementById("WholeMandalart")}
+          />
+        :
+          ""
+        }
       </Container>
       <ExplanatoryNote />
       <AchievementGauge  getTotalAchievementLevel={getTotalAchievementLevel} />

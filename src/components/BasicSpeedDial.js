@@ -1,26 +1,35 @@
 import * as React from 'react';
-import { useState } from 'react';
 import Box from '@mui/material/Box';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import SaveIcon from '@mui/icons-material/Save';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
-import { useAtom } from 'jotai';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import { useAtom, useAtomValue } from 'jotai';
 import BasicDialog from './BasicDialog';
 import { MESSAGE } from './../components/Const';
 import { format } from 'react-string-format';
 import { formatDateToYM } from './../components/FormatDate';
+import html2canvas from 'html2canvas';
 
 import { 
   clearAllDialogOpenAtom
   , saveDialogOpenAtom
+  , whenDataAtom
+  , bottomNavValueAtom
+  , selectYmFuncAtom
+  , selectYmAtom
    } from './../components/Atoms';
 
 const BasicSpeedDial = (props) => {
 
   const [clearAllDialogOpen, setClearAllDialogOpen] = useAtom(clearAllDialogOpenAtom);
   const [saveDialogOpen, setSaveDialogOpen] = useAtom(saveDialogOpenAtom);
+  const whenData = useAtomValue(whenDataAtom);
+  const bottomNavValue = useAtomValue(bottomNavValueAtom);
+  const selectYmFunc = useAtomValue(selectYmFuncAtom);
+  const selectYm = useAtomValue(selectYmAtom);
 
   /** 保存ダイアログオープン */
   const saveDialogOpenExecute = () => {
@@ -32,11 +41,46 @@ const BasicSpeedDial = (props) => {
     setClearAllDialogOpen(true);
   }
 
+  /** 画像出力 */
+  const outputExecute = () => {
+    const target = props.element;
+    html2canvas(target).then(canvas => {
+      const targetImgUri = canvas.toDataURL("img/png");
+      saveAsImage(targetImgUri); 
+    });
+  }
+
+  const saveAsImage = uri => {
+    const downloadLink = document.createElement("a");
+  
+    if (typeof downloadLink.download === "string") {
+      downloadLink.href = uri;
+  
+      // ファイル名
+      let fileNm = whenData;
+      //成長記録タブ押下、表示押下時は表示中の年月のデータ
+      if(bottomNavValue === 2 && selectYmFunc === 1){
+        fileNm = selectYm;
+      }
+
+      downloadLink.download = format(MESSAGE.OUTPUT_FILE_NAME, fileNm);
+      // Firefox では body の中にダウンロードリンクがないといけないので一時的に追加
+      document.body.appendChild(downloadLink);
+      // ダウンロードリンクが設定された a タグをクリック
+      downloadLink.click();
+      // Firefox 対策で追加したリンクを削除しておく
+      document.body.removeChild(downloadLink);
+    } else {
+      window.open(uri);
+    }
+  }
+
   const yyyymm = formatDateToYM(new Date());
 
   const actions = [
-    { icon: <ClearAllIcon />, name: MESSAGE.CLEAR_ALL_SPEED_DIAL, onClick:clearAllDialogOpenExecute },
     { icon: <SaveIcon />, name: format(MESSAGE.SAVE_SPEED_DIAL, yyyymm), onClick:saveDialogOpenExecute },
+    { icon: <CameraAltIcon />, name: MESSAGE.OUTPUT_SPEED_DIAL, onClick:outputExecute },
+    { icon: <ClearAllIcon />, name: MESSAGE.CLEAR_ALL_SPEED_DIAL, onClick:clearAllDialogOpenExecute },
   ];
   return (
     <Box sx={{ transform: 'translateZ(0px)', flexGrow: 1 }}>

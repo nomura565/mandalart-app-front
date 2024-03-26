@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useNavigate } from "react-router-dom";
 import { MESSAGE } from './../components/Const';
 
@@ -13,7 +13,7 @@ import {
 const Logout = (props) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
-  const [loggedIn, setLoggedIn] = useAtom(loggedInAtom);
+  const setLoggedIn = useSetAtom(loggedInAtom);
 
   /** ログアウト処理 */
   const logout = () => {

@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 import { splitAtom } from 'jotai/utils'
 import { getObjectCopy } from './CommonFunc'
+import { addMonthDateToYM } from './FormatDate';
 
 export const isLoadingAtom = atom(false);
 export const loggedInAtom = atom(false);
@@ -15,17 +16,22 @@ export const clearAllDialogOpenAtom = atom(false);
 export const saveDialogOpenAtom = atom(false);
 export const selectUserIdAtom = atom("");
 export const whenAchievementAtom = atom("");
+export const whenDataAtom = atom("");
 export const targetMessageAtom = atom("");
+export const selectYmAtom = atom(addMonthDateToYM(new Date(), -1));
 
 export const initMandalartCell = {
   key: ''
   , achievementLevel: 0
   , textFieldValue: ''
+  , yyyymm: ''
   , isGrow: false
   , compareAchievementLevel: 0
   , compareTextFieldValue: ''
+  , compareYyyymm: ''
   , tmpAchievementLevel: 0
   , tmpTextFieldValue: ''
+  , tmpYyyymm: ''
 };
 
 let mandalartCellList = [];

@@ -1,5 +1,5 @@
 import TextField from '@mui/material/TextField';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
 import { 
   textFieldDisabledAtom
@@ -61,6 +61,8 @@ const MandalartCell = (props) => {
     case 70:
       syncCellIdx = 50;
       break;
+    default:
+      break;
   }
 
   let isLeft = false;
@@ -83,20 +85,20 @@ const MandalartCell = (props) => {
     isRight = true;
   }
 
-  const [bottomNavValue, setBottomNavValue] = useAtom(bottomNavValueAtom);
-  const [textFieldDisabled, setTextFieldDisabled] = useAtom(textFieldDisabledAtom);
-  const [mandalartCellList, setMandalartCellList] = useAtom(mandalartCellListAtomsAtom);
+  const bottomNavValue = useAtomValue(bottomNavValueAtom);
+  const textFieldDisabled = useAtomValue(textFieldDisabledAtom);
+  const mandalartCellList = useAtomValue(mandalartCellListAtomsAtom);
   const [mandalartCell, setMandalartCell] = useAtom(mandalartCellList[props.idx]);
-  const [syncMandalartCell, setSyncMandalartCell] = useAtom(mandalartCellList[syncCellIdx]);
-  const [selectYmFunc, setSelectYmFunc] = useAtom(selectYmFuncAtom);
+  const setSyncMandalartCell = useSetAtom(mandalartCellList[syncCellIdx]);
+  const selectYmFunc = useAtomValue(selectYmFuncAtom);
 
   let cellClass = "mandalart-cell";
-  if(isTop) cellClass = cellClass + " " + "mandalart-cell-top";
-  if(isBottom) cellClass = cellClass + " " + "mandalart-cell-bottom";
-  if(isLeft) cellClass = cellClass + " " + "mandalart-cell-left";
-  if(isRight) cellClass = cellClass + " " + "mandalart-cell-right";
+  if(isTop) cellClass = `${cellClass} mandalart-cell-top`;
+  if(isBottom) cellClass = `${cellClass} mandalart-cell-bottom`;
+  if(isLeft) cellClass = `${cellClass} mandalart-cell-left`;
+  if(isRight) cellClass = `${cellClass} mandalart-cell-right`;
 
-  const centerCellClass = cellClass + " center-cell";
+  const centerCellClass = `${cellClass} center-cell`;
   //比較してレベルが違うセルを点滅させるのは以下の時
   //比較してレベルが違う
   //成長記録タブが押下されている

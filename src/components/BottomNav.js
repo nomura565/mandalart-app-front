@@ -5,25 +5,26 @@ import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 import { MESSAGE, ROLE } from './../components/Const';
 import { getSession } from './../components/CommonFunc';
 
-import { 
+import {
   bottomNavValueAtom
   , whenAchievementAtom
   , targetMessageAtom
-  , growthMessageAtom
-   } from './../components/Atoms';
+  , selectYmFuncAtom
+} from './../components/Atoms';
 
 const BottomNav = (props) => {
-  const [bottomNavValue, setBottomNavValue] = useAtom(bottomNavValueAtom);
-  const [whenAchievement, setWhenAchievement] = useAtom(whenAchievementAtom);
-  const [targetMessage, setTargetMessage] = useAtom(targetMessageAtom);
+  const bottomNavValue = useAtomValue(bottomNavValueAtom);
+  const whenAchievement = useAtomValue(whenAchievementAtom);
+  const targetMessage = useAtomValue(targetMessageAtom);
   const [growthMessageOpen, setgrowthMessageOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState((getSession().role_id === ROLE.ADMIN) ? true : false);
+  const [isAdmin] = useState((getSession().role_id === ROLE.ADMIN) ? true : false);
+  const selectYmFunc = useAtomValue(selectYmFuncAtom);
 
   /** マンダラート機能変更 */
   const bottomNavChange = (e, newValue) => {
@@ -46,46 +47,42 @@ const BottomNav = (props) => {
           value={bottomNavValue}
           onChange={bottomNavChange}
         >
-          {!isAdmin
-            ?
-            <Tooltip title={whenAchievement} 
-              arrow 
-              open={true}
-              placement="top"
-            >
-              <BottomNavigationAction label={MESSAGE.ACHIEVEMENT_INPUT} icon={<PaletteIcon />} />
-            </Tooltip>
-            :
-            ""
-          }
-          {!isAdmin
-            ?
-            <Tooltip title={targetMessage} 
-              arrow 
-              open={true}
-              placement="top"
-            >
-              <BottomNavigationAction label={MESSAGE.TARGET_INPUT}  icon={<DrawIcon />} />
-            </Tooltip>
-            :
-            ""
-          }
-          <Tooltip title={MESSAGE.GROWTH_MESSAGE} 
-            arrow 
-            placement="bottom"
-            open={growthMessageOpen && bottomNavValue == 2}
+          <Tooltip title={whenAchievement}
+            arrow
+            open={(selectYmFunc === 0 || bottomNavValue !== 2)}
+            placement="top"
           >
             <BottomNavigationAction 
+              label={MESSAGE.ACHIEVEMENT_INPUT} 
+              icon={<PaletteIcon color={(isAdmin) ? "disabled" : ""} />} 
+            />
+          </Tooltip>
+          <Tooltip title={targetMessage}
+            arrow
+            open={true}
+            placement="top"
+          >
+            <BottomNavigationAction 
+              label={MESSAGE.TARGET_INPUT} 
+              icon={<DrawIcon color={(isAdmin) ? "disabled" : ""} />} 
+            />
+          </Tooltip>
+          <Tooltip title={MESSAGE.GROWTH_MESSAGE}
+            arrow
+            placement="bottom"
+            open={growthMessageOpen && bottomNavValue === 2}
+          >
+            <BottomNavigationAction
               onMouseEnter={growthRecordMouseEnter}
               onMouseLeave={growthRecordMouseLeave}
-              label={MESSAGE.GROWTH_RECORD}  
-              icon={<AccessibilityNewIcon />} 
+              label={MESSAGE.GROWTH_RECORD}
+              icon={<AccessibilityNewIcon />}
             />
           </Tooltip>
         </BottomNavigation>
       </Box>
     </Paper>
-   );
+  );
 }
 
 export default BottomNav;

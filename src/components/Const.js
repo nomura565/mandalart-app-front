@@ -1,5 +1,3 @@
-import { cyan } from '@mui/material/colors';
-
 export const AUTHOR = "Yusuke Nomura";
 
 export const SELECT_YYYY_LIST = [2024,2025];
@@ -30,6 +28,7 @@ export const MESSAGE = {
   CONFIRM_PASSWORD_INVALID: "パスワード（確認用）が一致しません",
   USERID_INVALID: "ユーザIDに不適切な文字が含まれています",
   LOGIN_FAIL: "ユーザIDもしくはパスワードが間違っています",
+  SIGN_UP_FAIL: "アカウント作成に失敗しました",
   USERID_DUPLICATE: "既に使用されているユーザIDです",
   CANCEL: "キャンセル",
   EXECUTE: "実行",
@@ -37,11 +36,13 @@ export const MESSAGE = {
   CLEAR_ALL_DIALOG_CONTENT: "画面上の目標と実績を全て初期状態にします。\n※データベースの値には影響しません",
   CLEAR_ALL_SPEED_DIAL: "目標と実績をオールクリア",
   SAVE_SPEED_DIAL: "{0}の目標と実績として保存",
+  OUTPUT_SPEED_DIAL: "現在の目標と実績を出力",
   SAVE_DIALOG_TITLE: "目標と実績を保存しますか？",
   SAVE_DIALOG_CONTENT: "画面上の目標と実績を{0}のデータとして保存します。",
   SAVE_SUCCESS: "目標と実績を保存しました。",
   SELECT_USER_LABEL: "ユーザ選択",
   SELECT_YM_LABEL: "比較する年月",
+  SELECT_YM_LABEL2: "表示中の年月",
   COMPARE: "比較",
   SHOW: "表示",
   WHEN_ACHIEVEMENT: "{0}の実績を表示中",
@@ -61,6 +62,10 @@ export const MESSAGE = {
   SIGNUP: "Create an account",
   BACK_TO_TOP: "Back to Top",
   SIGN_UP_SUCCESS: "アカウントを作成しました。",
+  USERID_LENGTH_INVALID: "ユーザIDは5文字以上設定してください",
+  PASSWORD_INVALID: "パスワードは8文字以上、英数字と記号を組み合わせてください",
+  INPUT_YET: "入力中",
+  OUTPUT_FILE_NAME: "{0}のマンダラート.png",
 }
 
 export const BASE_URL = 'http://localhost:9050/api/';

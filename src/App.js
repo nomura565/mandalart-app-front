@@ -1,7 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 
 
 import Login from './routes/Login';
@@ -15,7 +14,7 @@ import {
    } from './components/Atoms';
 
 function App() {
-  const [loggedIn, setLoggedIn] = useAtom(loggedInAtom);
+  const loggedIn = useAtomValue(loggedInAtom);
 
   const PrivateRoute = ({ children }) => {
     if (!loggedIn && !getSession().user_id) {

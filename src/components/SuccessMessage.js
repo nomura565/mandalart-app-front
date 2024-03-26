@@ -1,12 +1,12 @@
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { 
   successMessageAtom
    } from './../components/Atoms';
 
 const SuccessMessage = (props) => {
-  const [successMessage, setSuccessMessage] = useAtom(successMessageAtom);
+  const successMessage = useAtomValue(successMessageAtom);
   return (
     <div>
     {successMessage

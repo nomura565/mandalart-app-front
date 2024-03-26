@@ -3,6 +3,11 @@ export const isNullOrEmpty = (value) => {
   return (!value || !value.match(/\S/g));
 }
 
+/** nullの判定 */
+export const isNull = (value) => {
+  return (typeof(value) === "undefined");
+}
+
 /** セッション情報設定 */
 export const setSession = (userInfo) => {
   sessionStorage.setItem('Mandalart-App-UserInfo', JSON.stringify(userInfo));

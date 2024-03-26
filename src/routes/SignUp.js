@@ -2,7 +2,6 @@ import '../App.css';
 
 import * as React from 'react';
 import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -16,24 +15,21 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { sha256 } from 'js-sha256';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 
 import { MESSAGE, API_URL, THEME } from './../components/Const';
-import { isNullOrEmpty } from './../components/CommonFunc';
+import { isNullOrEmpty, isNull } from './../components/CommonFunc';
 import Progress from './../components/Progress';
 import SuccessMessage from './../components/SuccessMessage';
 import { 
   isLoadingAtom
-  , loggedInAtom
   , successMessageAtom
    } from './../components/Atoms';
 
 function SignUp() {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
-  const [loggedIn, setLoggedIn] = useAtom(loggedInAtom);
 
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
@@ -50,7 +46,7 @@ function SignUp() {
   const [errorPassword, setErrorPassword] = useState(false);
   const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
 
-  const [successMessage, setSuccessMessage] = useAtom(successMessageAtom);
+  const setSuccessMessage = useSetAtom(successMessageAtom);
 
   const [submitDisabled, setSubmitDisabled] = useState(false);
 
@@ -84,10 +80,15 @@ function SignUp() {
       setErrorUserId(true);
       setErrorMessageUserId(MESSAGE.USERID_EMPTY);
       result = false;
-    }else {
+    } else {
+      //半角英字のみOK
       if (!userId.match(/^[a-zA-Z0-9_-]+$/)) {
         setErrorUserId(true);
         setErrorMessageUserId(MESSAGE.USERID_INVALID);
+        result = false;
+      } else if (userId.length < 5) {
+        setErrorUserId(true);
+        setErrorMessageUserId(MESSAGE.USERID_LENGTH_INVALID);
         result = false;
       }
     }
@@ -102,6 +103,19 @@ function SignUp() {
       setErrorPassword(true);
       setErrorMessagePassword(MESSAGE.PASSWORD_EMPTY);
       result = false;
+    } else {
+      //パスワードは8文字以上、英数字と記号を組み合わせてください
+      if (!password.match(/^[a-zA-Z0-9]+[-/:-@[-´{-~]+$/)
+          && !password.match(/^[-/:-@[-´{-~]+[a-zA-Z0-9]+$/)){
+        setErrorPassword(true);
+        setErrorMessagePassword(MESSAGE.PASSWORD_INVALID);
+        result = false;
+      } 
+      if (password.length < 8) {
+        setErrorPassword(true);
+        setErrorMessagePassword(MESSAGE.PASSWORD_INVALID);
+        result = false;
+      }
     }
 
     if(isNullOrEmpty(confirmPassword)){
@@ -126,22 +140,27 @@ function SignUp() {
         user_id: userId
       })
       .then((response) => {
-        setIsLoading(false);
-        setErrorUserId(true);
-        setErrorMessageUserId(MESSAGE.USERID_DUPLICATE);
+        errorFunc(MESSAGE.USERID_DUPLICATE);
         return false;
       })
       .catch((error) => {
         if(error.response?.status === 404){
           return true;
         }else{
-          setIsLoading(false);
-          setErrorUserId(true);
-          setErrorMessagePassword(error.message);
+          errorFunc(error.message);
           return false;
         }
         return;
       });
+  }
+
+  /** エラー処理 */
+  const errorFunc = (_message) => {
+    let message = MESSAGE.SIGN_UP_FAIL;
+    if(!isNull(_message)) message = _message;
+    setIsLoading(false);
+    setErrorUserId(true);
+    setErrorMessageUserId(message);
   }
 
   /** サインアップ処理 */
@@ -173,16 +192,13 @@ function SignUp() {
             setSuccessMessage("");
           }, "2000");
         }else{
-          setErrorUserId(true);
-          setErrorUserId(MESSAGE.LOGIN_FAIL);
+          errorFunc();
           return;
         }
 
       })
       .catch((error) => {
-        setErrorUserId(true);
-        setIsLoading(false);
-        setErrorUserId(error.message);
+        errorFunc(error.message);
         return;
       });
   }

@@ -16,12 +16,12 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { sha256 } from 'js-sha256';
 import LoginIcon from '@mui/icons-material/Login';
 
 import { AUTHOR, MESSAGE, API_URL, THEME } from './../components/Const';
-import { isNullOrEmpty, setSession, translateNewLine } from './../components/CommonFunc';
+import { isNullOrEmpty, setSession, isNull } from './../components/CommonFunc';
 import Progress from './../components/Progress';
 import { 
   isLoadingAtom
@@ -31,7 +31,7 @@ import {
 function Login() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
-  const [loggedIn, setLoggedIn] = useAtom(loggedInAtom);
+  const setLoggedIn = useSetAtom(loggedInAtom);
 
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
@@ -94,24 +94,28 @@ function Login() {
           setSession(response.data);
           navigate("/Top");
         }else{
-          setErrorUserId(true);
-          setErrorPassword(true);
-          setErrorMessagePassword(MESSAGE.LOGIN_FAIL);
+          errorFunc();
           return;
         }
 
       })
       .catch((error) => {
-        setErrorUserId(true);
-        setErrorPassword(true);
-        setIsLoading(false);
-        if(error.response?.status === 404){
-          setErrorMessagePassword(MESSAGE.LOGIN_FAIL);
-        }else{
-          setErrorMessagePassword(error.message);
-        }
+        errorFunc((error.response?.status === 404)
+          ? undefined
+          : error.message
+          );
         return;
       });
+  }
+
+  /** エラー処理 */
+  const errorFunc = (_message) => {
+    let message = MESSAGE.LOGIN_FAIL;
+    if(!isNull(_message)) message = _message;
+    setIsLoading(false);
+    setErrorUserId(true);
+    setErrorPassword(true);
+    setErrorMessagePassword(message);
   }
 
   /** 著作権 */
@@ -173,7 +177,7 @@ function Login() {
                   label="Password"
                   type="password"
                   id="password"
-                  autoComplete="new-password"
+                  autoComplete="current-password"
                   onChange={passwordChange}
                   helperText={errorMessagePassword}
                 />
