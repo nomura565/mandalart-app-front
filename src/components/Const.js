@@ -5,12 +5,16 @@ export const SELECT_YYYY_LIST = [2024,2025];
 /** テーマ */
 export const THEME = {
   palette: {
-    mode: 'light',
-     primary: {
-      main: '#00bcd4',
+    primary: {
+      light: '#a3cddd',
+      main: '#96bfd3',
       contrastText:'#fff'
     },
-    }  
+    error: {
+      main: '#cd4338',
+      contrastText:'#fff'
+    },
+  }  
 }
 
 /** ロールID */
