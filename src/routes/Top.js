@@ -17,6 +17,8 @@ import Select from '@mui/material/Select';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { format } from 'react-string-format';
+import ChecklistIcon from '@mui/icons-material/Checklist';
+import IconButton from '@mui/material/IconButton';
 
 import { MESSAGE, API_URL, SELECT_YYYY_LIST, ROLE, THEME } from './../components/Const';
 import { getSession, getObjectCopy, isNull } from './../components/CommonFunc';
@@ -31,6 +33,7 @@ import Logout from './../components/Logout';
 import BasicSpeedDial from './../components/BasicSpeedDial';
 import ExplanatoryNote from './../components/ExplanatoryNote';
 import AchievementGauge from './../components/AchievementGauge';
+import CheckListDialog from '../components/CheckListDialog';
 
 import { 
   isLoadingAtom
@@ -41,13 +44,14 @@ import {
   , errorMessageAtom
   , initMandalartCell
   , selectUserIdAtom
-  , successMessageAtom
+  , achievementGaugeValueAtom
   , whenAchievementAtom
   , targetMessageAtom
   , whenDataAtom
   , selectYmAtom
   , isSuccessAtom
   , saveDialogOpenAtom
+  , checkListDialogOpenAtom
    } from './../components/Atoms';
 
 function Top() {
@@ -65,6 +69,7 @@ function Top() {
 
   const setSaveDialogOpen = useSetAtom(saveDialogOpenAtom);
   const [selectYmFunc, setSelectYmFunc] = useAtom(selectYmFuncAtom);
+  const [achievementGaugeValue, setAchievementGaugeValue] = useAtom(achievementGaugeValueAtom);
   const setErrorMessage = useSetAtom(errorMessageAtom);
   const setIsSuccess = useSetAtom(isSuccessAtom);
   const setWhenAchievement = useSetAtom(whenAchievementAtom);
@@ -72,6 +77,7 @@ function Top() {
   const [bottomNavValue, setBottomNavValue] = useAtom(bottomNavValueAtom);
   const setTargetMessage = useSetAtom(targetMessageAtom);
   const setTextFieldDisabled = useSetAtom(textFieldDisabledAtom);
+  const setCheckListDialogOpen = useSetAtom(checkListDialogOpenAtom);
 
   const mandalartCellList= useAtomValue(mandalartCellListAtomsAtom);
   //愚直に0～81までのatomを作る　愚直すぎるのであくまで暫定
@@ -190,6 +196,12 @@ function Top() {
       , setMandalartCell80
     ];
   }
+
+  /** チェックリストダイアログオープン */
+  const openCheckListDialog = () => {
+    setCheckListDialogOpen(true);
+
+  }
   
   /** 達成率の取得 */
   const getTotalAchievementLevel = () => {
@@ -198,6 +210,10 @@ function Top() {
       return sum + element.achievementLevel;
     }, 0);
     let culc = total / (3*81);
+    culc = parseFloat(culc.toFixed(3));
+    //console.log("culc"+ culc);
+    //console.log("culc2:"+ culc2);
+    setAchievementGaugeValue(culc);
     return culc;
   }
 
@@ -233,9 +249,10 @@ function Top() {
     let sendData = {
       user_id: selectUserId
       , yyyymm: currentYyyymm
+      , achievement_gauge_value:achievementGaugeValue
 
     };
-    getMandalartCellArrayList().map((cell, idx) => {
+    getMandalartCellArrayList().forEach((cell, idx) => {
       sendData[`achievement_level_${idx}`] = cell.achievementLevel;
       sendData[`target_${idx}`] = cell.textFieldValue;
     });
@@ -305,9 +322,7 @@ function Top() {
         if (response.status === 200) {
           setUserList(response.data);
           setIsLoading(false);
-          if(isAdmin){
-            
-          }else{
+          if(!isAdmin){
             setSelectUserId(userId);
             getMandalart(userId);
           }
@@ -340,7 +355,7 @@ function Top() {
         if (response.status === 200) {
           let SetMandalartCellArrayList = getSetMandalartCellArrayList();
           if(!sendYyyymm) {
-            SetMandalartCellArrayList.map((setCell, idx) => {
+            SetMandalartCellArrayList.forEach((setCell, idx) => {
               let cell = getObjectCopy(initMandalartCell);
 
               cell["key"] = response.data[`key`];
@@ -490,6 +505,27 @@ function Top() {
                   })}
                 </Select>
               </FormControl>
+              {isAdmin
+              ?
+                <FormControl sx={{ m: 1 }} size="small">
+                  <IconButton 
+                    aria-label="checkList"
+                    sx={{ 
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      cursor:"pointer",
+                      paddingLeft:"0px"
+                    }}
+                    onClick={openCheckListDialog}
+                  >
+                    <ChecklistIcon/>
+                  </IconButton>
+                  
+                </FormControl>
+              :
+                ""
+              }
             </Box>
             <FormControl sx={{ m: 1 }} size="small">
               {bottomNavValue === 2
@@ -568,19 +604,15 @@ function Top() {
           <MandalartCellRow rowIndex={7} />
           <MandalartCellRow rowIndex={8} />
         </Box>
-        {!isAdmin
-        ?
-          <BasicSpeedDial 
-            clearAllExecute={clearAllExecute}
-            saveExecute={saveExecute}
-            element={document.getElementById("WholeMandalart")}
-          />
-        :
-          ""
-        }
+        <BasicSpeedDial 
+          clearAllExecute={clearAllExecute}
+          saveExecute={saveExecute}
+          element={document.getElementById("WholeMandalart")}
+        />
       </Container>
       <ExplanatoryNote />
       <AchievementGauge  getTotalAchievementLevel={getTotalAchievementLevel} />
+      <CheckListDialog />
     </ThemeProvider>
   </div>
   );

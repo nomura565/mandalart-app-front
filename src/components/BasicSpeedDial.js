@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
@@ -8,10 +9,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import { useAtom, useAtomValue } from 'jotai';
 import BasicDialog from './BasicDialog';
-import { MESSAGE } from './../components/Const';
+import { MESSAGE, ROLE } from './../components/Const';
 import { format } from 'react-string-format';
 import { formatDateToYM } from './../components/FormatDate';
 import html2canvas from 'html2canvas';
+import {getSession} from './../components/CommonFunc';
 
 import { 
   clearAllDialogOpenAtom
@@ -26,6 +28,7 @@ const BasicSpeedDial = (props) => {
 
   const [clearAllDialogOpen, setClearAllDialogOpen] = useAtom(clearAllDialogOpenAtom);
   const [saveDialogOpen, setSaveDialogOpen] = useAtom(saveDialogOpenAtom);
+  const [isAdmin] = useState((getSession().role_id === ROLE.ADMIN) ? true : false);
   const whenData = useAtomValue(whenDataAtom);
   const bottomNavValue = useAtomValue(bottomNavValueAtom);
   const selectYmFunc = useAtomValue(selectYmFuncAtom);
@@ -77,11 +80,16 @@ const BasicSpeedDial = (props) => {
 
   const yyyymm = formatDateToYM(new Date());
 
-  const actions = [
-    { icon: <SaveIcon  color='primary'/>, name: format(MESSAGE.SAVE_SPEED_DIAL, yyyymm), onClick:saveDialogOpenExecute },
-    { icon: <CameraAltIcon />, name: MESSAGE.OUTPUT_SPEED_DIAL, onClick:outputExecute },
-    { icon: <DeleteIcon color='error'/>, name: MESSAGE.CLEAR_ALL_SPEED_DIAL, onClick:clearAllDialogOpenExecute },
+  let actions = [
+    { adminUse: false, icon: <SaveIcon  color='primary'/>, name: format(MESSAGE.SAVE_SPEED_DIAL, yyyymm), onClick:saveDialogOpenExecute },
+    { adminUse: true, icon: <CameraAltIcon />, name: MESSAGE.OUTPUT_SPEED_DIAL, onClick:outputExecute },
+    { adminUse: false, icon: <DeleteIcon color='error'/>, name: MESSAGE.CLEAR_ALL_SPEED_DIAL, onClick:clearAllDialogOpenExecute },
   ];
+
+  if(isAdmin){
+    actions = actions.filter(action => action.adminUse);
+  }
+
   return (
     <Box sx={{ transform: 'translateZ(0px)', flexGrow: 1 }}>
       <SpeedDial

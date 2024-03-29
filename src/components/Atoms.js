@@ -14,6 +14,7 @@ export const achievementGaugeValueAtom = atom(0);
 
 export const clearAllDialogOpenAtom = atom(false);
 export const saveDialogOpenAtom = atom(false);
+export const checkListDialogOpenAtom = atom(false);
 export const selectUserIdAtom = atom("");
 export const whenAchievementAtom = atom("");
 export const whenDataAtom = atom("");

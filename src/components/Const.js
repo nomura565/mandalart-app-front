@@ -14,6 +14,9 @@ export const THEME = {
       main: '#cd4338',
       contrastText:'#fff'
     },
+    background: {
+      default: '#f6f8f7',
+    }
   }  
 }
 
@@ -70,6 +73,10 @@ export const MESSAGE = {
   PASSWORD_INVALID: "パスワードは8文字以上、英数字と記号を組み合わせてください",
   INPUT_YET: "入力中",
   OUTPUT_FILE_NAME: "{0}のマンダラート.png",
+  USER_NAME: "ユーザ名",
+  MAX_YYYYMM: "最終登録月",
+  ACHIEVEMENT_GAUGE_VALUE: "達成率",
+  ACHIEVEMENT_STATUS: "達成状況",
 }
 
 export const BASE_URL = 'http://localhost:9050/api/';
@@ -77,6 +84,7 @@ export const BASE_URL = 'http://localhost:9050/api/';
 export const API_URL = {
   LOGIN: BASE_URL + "users/login",
   GET_USER_LIST: BASE_URL + "users/getUserList",
+  GET_CHECK_LIST: BASE_URL + "users/getCheckList",
   GET_USER: BASE_URL + "users/getUser",
   CREATE_USER: BASE_URL + "users/createUser",
   SAVE_MANDALART: BASE_URL + "mandalart/saveMandalart",

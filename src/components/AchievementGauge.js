@@ -1,8 +1,14 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import GaugeChart from 'react-gauge-chart';
+import { useAtomValue } from 'jotai';
+
+import { 
+  achievementGaugeValueAtom
+  } from './../components/Atoms';
 
 const AchievementGauge = (props) => {
+  const achievementGaugeValue = useAtomValue(achievementGaugeValueAtom);
 
   return (
     <Box
