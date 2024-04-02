@@ -3,6 +3,8 @@
 ![login](/images/login.png)
 ![signup](/images/signup.png)
 ![top](/images/top.png)
+![acheivementlist](/images/acheivementlist.png)
+![graph](/images/graph.png)
 
 ## 使い方
 
