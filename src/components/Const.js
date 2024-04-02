@@ -50,6 +50,7 @@ export const MESSAGE = {
   SELECT_USER_LABEL: "ユーザ選択",
   SELECT_YM_LABEL: "比較する年月",
   SELECT_YM_LABEL2: "表示中の年月",
+  SELECT_YY_LABEL: "表示中の年",
   COMPARE: "比較",
   SHOW: "表示",
   WHEN_ACHIEVEMENT: "{0}の実績を表示中",
@@ -80,11 +81,14 @@ export const MESSAGE = {
 }
 
 export const BASE_URL = 'http://localhost:9050/api/';
+/** 検証環境用 */
+//export const BASE_URL = 'http://172.16.1.64:3000/api/';
 
 export const API_URL = {
   LOGIN: BASE_URL + "users/login",
   GET_USER_LIST: BASE_URL + "users/getUserList",
   GET_CHECK_LIST: BASE_URL + "users/getCheckList",
+  GET_ACHIEVEMENT_LIST: BASE_URL + "users/getAcheivementList",
   GET_USER: BASE_URL + "users/getUser",
   CREATE_USER: BASE_URL + "users/createUser",
   SAVE_MANDALART: BASE_URL + "mandalart/saveMandalart",

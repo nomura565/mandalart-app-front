@@ -3,6 +3,7 @@ import ja from 'date-fns/locale/ja';
 
 const DATE_FORMAT = "yyyy/MM/dd";
 const YM_FORMAT = "yyyy/MM";
+const YY_FORMAT = "yyyy";
 
 /** Date→yyyy/MM/ddの文字列に変換する */
 export const formatDateToString = (date) => {
@@ -19,6 +20,15 @@ export const formatDateToYM = (date) => {
   return format(
     d,
     YM_FORMAT, {
+    locale: ja,
+  });
+}
+/** Date→yyyyの文字列に変換する */
+export const formatDateToYY = (date) => {
+  const d = new Date(date.toString());
+  return format(
+    d,
+    YY_FORMAT, {
     locale: ja,
   });
 }

@@ -5,7 +5,7 @@ export const isNullOrEmpty = (value) => {
 
 /** nullの判定 */
 export const isNull = (value) => {
-  return (typeof(value) === "undefined");
+  return (typeof(value) === "undefined" ||  value === null);
 }
 
 /** セッション情報設定 */
