@@ -1,7 +1,7 @@
 import '../App.css';
 
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -18,6 +18,7 @@ import axios from "axios";
 import { useAtom, useSetAtom } from 'jotai';
 import { sha256 } from 'js-sha256';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import MenuItem from '@mui/material/MenuItem';
 
 import { MESSAGE, API_URL, THEME } from './../components/Const';
 import { isNullOrEmpty, isNull } from './../components/CommonFunc';
@@ -35,20 +36,51 @@ function SignUp() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [department, setDepartment] = useState(null);
 
   const [errorMessageUserId, setErrorMessageUserId] = useState("");
   const [errorMessageUserName, setErrorMessageUserName] = useState("");
   const [errorMessagePassword, setErrorMessagePassword] = useState("");
   const [errorMessageConfirmPassword, setErrorMessageConfirmPassword] = useState("");
+  const [errorMessageDepartment, setErrorMessageDepartment] = useState("");
 
   const [errorUserId, setErrorUserId] = useState(false);
   const [errorUserName, setErrorUserName] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
   const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
+  const [errorDepartment, setErrorDepartment] = useState(false);
 
   const setSuccessMessage = useSetAtom(successMessageAtom);
 
   const [submitDisabled, setSubmitDisabled] = useState(false);
+  const [departmentList, setDepartmentList] = useState([]);
+
+  useEffect(() => {
+    getDepartmentList();
+  }, []);
+
+  /** 部署一覧取得 */
+  const getDepartmentList = () => {
+    setErrorMessageUserId("");
+    setDepartmentList([]);
+    setIsLoading(true);
+    axios
+      .post(API_URL.GET_DEPARTMENT_LIST, {
+      })
+      .then((response) => {
+        setIsLoading(false);
+        if (response.status === 200) {
+          setDepartmentList(response.data);
+          setIsLoading(false);
+        }
+
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setErrorMessageUserId(error.message);
+        return;
+      });
+  }
 
   const userIdChange = (event) => {
     setUserId(event.target.value);
@@ -65,16 +97,22 @@ function SignUp() {
     setConfirmPassword(event.target.value);
   };
 
+  const departmentChange = (event) => {
+    setDepartment(event.target.value);
+  };
+
   const isValidate = () => {
     let result = true;
     setErrorMessageUserId("");
     setErrorMessageUserName("");
     setErrorMessagePassword("");
     setErrorMessageConfirmPassword("");
+    setErrorMessageDepartment("");
     setErrorUserId(false);
     setErrorUserName(false);
     setErrorPassword(false);
     setErrorConfirmPassword(false);
+    setErrorDepartment(false);
 
     if(isNullOrEmpty(userId)){
       setErrorUserId(true);
@@ -99,19 +137,19 @@ function SignUp() {
       result = false;
     }
 
+    if(isNull(department)){
+      setErrorDepartment(true);
+      setErrorMessageDepartment(MESSAGE.DEPARTMENT_EMPTY);
+      result = false;
+    }
+
     if(isNullOrEmpty(password)){
       setErrorPassword(true);
       setErrorMessagePassword(MESSAGE.PASSWORD_EMPTY);
       result = false;
     } else {
       //パスワードは8文字以上、英数字と記号を組み合わせてください
-      if (!password.match(/^[a-zA-Z0-9]+[-/:-@[-´{-~]+$/)
-          && !password.match(/^[-/:-@[-´{-~]+[a-zA-Z0-9]+$/)){
-        setErrorPassword(true);
-        setErrorMessagePassword(MESSAGE.PASSWORD_INVALID);
-        result = false;
-      } 
-      if (password.length < 8) {
+      if (!password.match(/^(?=.*[a-z])(?=.*[.?/-])[a-zA-Z0-9.?/-]{8,24}$/)){
         setErrorPassword(true);
         setErrorMessagePassword(MESSAGE.PASSWORD_INVALID);
         result = false;
@@ -181,6 +219,7 @@ function SignUp() {
       .post(API_URL.CREATE_USER, {
         user_id: userId,
         user_name: userName,
+        department_id: department,
         password: sha256(password)
       })
       .then((response) => {
@@ -252,6 +291,24 @@ function SignUp() {
                   onChange={userNameChange}
                   helperText={errorMessageUserName}
                 />
+              </Grid>
+              <Grid item xs={12} className='grid-login-input'>
+                <TextField
+                  id="department"
+                  select
+                  required
+                  fullWidth
+                  error={errorDepartment}
+                  label="Department"
+                  onChange={departmentChange}
+                  helperText={errorMessageDepartment}
+                >
+                  {departmentList.map((department) => (
+                    <MenuItem key={department.department_id} value={department.department_id}>
+                      {department.department_name}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
               <Grid item xs={12} className='grid-login-input'>
                 <TextField

@@ -31,6 +31,7 @@ export const MESSAGE = {
   USERID_EMPTY: "ユーザIDを入力してください",
   USERNAME_EMPTY: "ユーザ名を入力してください",
   PASSWORD_EMPTY: "パスワードを入力してください",
+  DEPARTMENT_EMPTY: "部署を選択してください",
   CONFIRM_PASSWORD_EMPTY: "パスワード（確認用）を入力してください",
   CONFIRM_PASSWORD_INVALID: "パスワード（確認用）が一致しません",
   USERID_INVALID: "ユーザIDに不適切な文字が含まれています",
@@ -78,6 +79,8 @@ export const MESSAGE = {
   MAX_YYYYMM: "最終登録月",
   ACHIEVEMENT_GAUGE_VALUE: "達成率",
   ACHIEVEMENT_STATUS: "達成状況",
+  DEPARTMENT: "部署",
+  NO_SELECT: "選択無し",
 }
 
 export const BASE_URL = 'http://localhost:9050/api/';
@@ -89,6 +92,7 @@ export const API_URL = {
   GET_USER_LIST: BASE_URL + "users/getUserList",
   GET_CHECK_LIST: BASE_URL + "users/getCheckList",
   GET_ACHIEVEMENT_LIST: BASE_URL + "users/getAcheivementList",
+  GET_DEPARTMENT_LIST: BASE_URL + "users/getDepartmentList",
   GET_USER: BASE_URL + "users/getUser",
   CREATE_USER: BASE_URL + "users/createUser",
   SAVE_MANDALART: BASE_URL + "mandalart/saveMandalart",

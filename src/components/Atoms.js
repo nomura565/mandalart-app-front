@@ -21,6 +21,7 @@ export const whenDataAtom = atom("");
 export const targetMessageAtom = atom("");
 export const selectYmAtom = atom(addMonthDateToYM(new Date(), -1));
 export const isSuccessAtom = atom(false);
+export const departmentListAtom = atom([]);
 
 export const initMandalartCell = {
   key: ''

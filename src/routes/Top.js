@@ -22,7 +22,7 @@ import IconButton from '@mui/material/IconButton';
 
 import { MESSAGE, API_URL, SELECT_YYYY_LIST, ROLE, THEME } from './../components/Const';
 import { getSession, getObjectCopy, isNull } from './../components/CommonFunc';
-import { formatDateToYM } from './../components/FormatDate';
+import { formatDateToYM, addMonthDateToYM } from './../components/FormatDate';
 
 import Progress from './../components/Progress';
 import MandalartCellRow from './../components/MandalartCellRow';
@@ -52,6 +52,7 @@ import {
   , isSuccessAtom
   , saveDialogOpenAtom
   , checkListDialogOpenAtom
+  , departmentListAtom
    } from './../components/Atoms';
 
 function Top() {
@@ -78,6 +79,8 @@ function Top() {
   const setTargetMessage = useSetAtom(targetMessageAtom);
   const setTextFieldDisabled = useSetAtom(textFieldDisabledAtom);
   const setCheckListDialogOpen = useSetAtom(checkListDialogOpenAtom);
+  const [department, setDepartment] = useState("");
+  const [departmentList, setDepartmentList] = useAtom(departmentListAtom);
 
   const mandalartCellList= useAtomValue(mandalartCellListAtomsAtom);
   //愚直に0～81までのatomを作る　愚直すぎるのであくまで暫定
@@ -293,21 +296,55 @@ function Top() {
   const [userList, setUserList] = useState([]);
 
   /** 初期処理 */
-  const initFunc = () => {
+  const initFunc = (pageLoadFlg) => {
     clearAllExecute();
     setSelectUserId("");
     setBottomNavValue((isAdmin) ? 2 : 0);
+    setSelectYm(addMonthDateToYM(new Date(), -1));
     setSelectYmFunc(0);
     setErrorMessage("");
     setIsSuccess(false);
     setWhenAchievement("");
-    getUserList();
+    if(pageLoadFlg) {
+      getUserList();
+      if(isAdmin) {
+        getDepartmentList();
+      }
+    }
   }
 
   useEffect(() => {
     //読み込み時
-    initFunc();
+    initFunc(true);
   }, [])
+
+  /** 部署一覧取得 */
+  const getDepartmentList = () => {
+    setErrorMessage("");
+    setDepartmentList([]);
+    setIsLoading(true);
+    axios
+      .post(API_URL.GET_DEPARTMENT_LIST, {
+      })
+      .then((response) => {
+        setIsLoading(false);
+        if (response.status === 200) {
+          setDepartmentList(response.data);
+          setIsLoading(false);
+        }
+
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setErrorMessage(error.message);
+        return;
+      });
+  }
+
+  const departmentChange = (event) => {
+    initFunc();
+    setDepartment(event.target.value);
+  };
 
   /** ユーザ一覧取得 */
   const getUserList = () => {
@@ -488,6 +525,33 @@ function Top() {
                 display: 'flex',
               }}
             >
+              {isAdmin
+                ?
+                  <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                    <InputLabel 
+                      id="select-department-label"
+                    >
+                      {MESSAGE.DEPARTMENT}
+                    </InputLabel>
+                    <Select
+                      labelId="select-department-label"
+                      label={MESSAGE.DEPARTMENT}
+                      onChange={departmentChange}
+                      value={department}
+                    >
+                      <MenuItem value="">
+                        {MESSAGE.NO_SELECT}
+                      </MenuItem>
+                      {departmentList.map((department) => (
+                        <MenuItem key={department.department_id} value={department.department_id}>
+                          {department.department_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                :
+                  ""
+              }
               <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                 <InputLabel id="select-user-label">{MESSAGE.SELECT_USER_LABEL}</InputLabel>
                 <Select
@@ -498,7 +562,13 @@ function Top() {
                   value={selectUserId}
                   disabled={!isAdmin}
                 >
-                  {userList.map((user) => {
+                  {userList.filter(user => { 
+                      if(department !== ""){
+                        return (user.department_id === department);
+                      } else {
+                        return user;
+                      }
+                    }).map((user) => {
                     return (
                       <MenuItem key={user.user_id} value={user.user_id}>{user.user_name}</MenuItem>
                       );
