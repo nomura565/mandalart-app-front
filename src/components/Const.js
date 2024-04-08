@@ -17,7 +17,16 @@ export const THEME = {
     background: {
       default: '#f6f8f7',
     }
-  }  
+  },
+  components: {
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          marginTop: '0px !important'
+        }
+      }
+    }
+  }
 }
 
 /** ロールID */
