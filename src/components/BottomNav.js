@@ -50,7 +50,10 @@ const BottomNav = (props) => {
           <Tooltip title={whenAchievement}
             arrow
             open={(selectYmFunc === 0 || bottomNavValue !== 2)}
-            placement="top"
+            placement="bottom"
+            sx={{
+              mt: '2px'
+            }}
           >
             <BottomNavigationAction 
               label={MESSAGE.ACHIEVEMENT_INPUT} 
@@ -60,7 +63,7 @@ const BottomNav = (props) => {
           <Tooltip title={targetMessage}
             arrow
             open={true}
-            placement="top"
+            placement="bottom"
           >
             <BottomNavigationAction 
               label={MESSAGE.TARGET_INPUT} 

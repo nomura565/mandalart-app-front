@@ -339,7 +339,7 @@ function Top() {
   }
 
   /** マンダラート取得 */
-  const getMandalart = (_userId, _yyyymm, _selectYmFunc) => {
+  const getMandalart = (_userId, _yyyymm, _selectYmFunc, _current_data) => {
     setErrorMessage("");
     setIsLoading(true);
     const sendUserId = (_userId) ? _userId : selectUserId;
@@ -388,14 +388,23 @@ function Top() {
                 setCell((oldValue) => ({ ...oldValue, isGrow: false }));
               } else {
                 //比較を押下したとき、比較すべき最新データはtmp○○に入っている
-                if(mandalartCellArrayList[idx].achievementLevel !== mandalartCellArrayList[idx].tmpAchievementLevel){
+                //ただし管理者モードのユーザ変更時、二回目に取得してここに入ってきた場合
+                //tmpAchievementLevelはまだ反映されてないので引数と比較する
+                let compare_level = mandalartCellArrayList[idx].tmpAchievementLevel;
+                let compare_field_value = mandalartCellArrayList[idx].tmpTextFieldValue;
+                if(_current_data){
+                  compare_level = _current_data[`achievement_level_${idx}`];
+                  compare_field_value = _current_data[`target_${idx}`];
+                }
+                if(mandalartCellArrayList[idx].achievementLevel !== compare_level){
                   setCell((oldValue) => ({ ...oldValue, isGrow: true }));
                 }
-                setCell((oldValue) => ({ ...oldValue, achievementLevel: mandalartCellArrayList[idx].tmpAchievementLevel }));
-                setCell((oldValue) => ({ ...oldValue, textFieldValue: mandalartCellArrayList[idx].tmpTextFieldValue }));
+                setCell((oldValue) => ({ ...oldValue, achievementLevel: compare_level }));
+                setCell((oldValue) => ({ ...oldValue, textFieldValue: compare_field_value }));
               }
             });
           }
+          return response.data;
         }else{
           return;
         }
@@ -442,8 +451,8 @@ function Top() {
     //管理者は最新の実績と比較する年月を取得する
     if(isAdmin){
       getMandalart(e.target.value)
-      .then((response) => {
-        getMandalart(e.target.value, _yyyymm)
+      .then((current_data) => {
+        getMandalart(e.target.value, selectYm, null, current_data)
       });
     } else {
       getMandalart(e.target.value, _yyyymm);
