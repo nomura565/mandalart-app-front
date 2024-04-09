@@ -149,7 +149,9 @@ function SignUp() {
       result = false;
     } else {
       //パスワードは8文字以上、英数字と記号を組み合わせてください
-      if (!password.match(/^(?=.*[a-z])(?=.*[.?/-])[a-zA-Z0-9.?/-]{8,24}$/)){
+      //if (!password.match(/^(?=.*[a-z])(?=.*[.?/-])[a-zA-Z0-9.?/-]{8,24}$/)){
+      //パスワードは8文字以上24文字以下で設定してください
+      if (!password.match(/^[a-zA-Z0-9]{8,24}$/)){
         setErrorPassword(true);
         setErrorMessagePassword(MESSAGE.PASSWORD_INVALID);
         result = false;

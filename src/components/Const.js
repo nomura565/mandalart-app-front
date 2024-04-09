@@ -81,7 +81,7 @@ export const MESSAGE = {
   BACK_TO_TOP: "Back to Top",
   SIGN_UP_SUCCESS: "アカウントを作成しました。",
   USERID_LENGTH_INVALID: "ユーザIDは5文字以上設定してください",
-  PASSWORD_INVALID: "パスワードは8文字以上、英数字と記号を組み合わせてください",
+  PASSWORD_INVALID: "パスワードは8文字以上24文字以下で設定してください",
   INPUT_YET: "入力中",
   OUTPUT_FILE_NAME: "{0}のマンダラート.png",
   USER_NAME: "ユーザ名",
