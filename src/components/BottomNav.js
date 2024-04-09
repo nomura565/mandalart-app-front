@@ -16,6 +16,7 @@ import {
   , whenAchievementAtom
   , targetMessageAtom
   , selectYmFuncAtom
+  , checkListDialogOpenAtom
 } from './../components/Atoms';
 
 const BottomNav = (props) => {
@@ -25,6 +26,7 @@ const BottomNav = (props) => {
   const [growthMessageOpen, setgrowthMessageOpen] = useState(false);
   const [isAdmin] = useState((getSession().role_id === ROLE.ADMIN) ? true : false);
   const selectYmFunc = useAtomValue(selectYmFuncAtom);
+  const checkListDialogOpen = useAtomValue(checkListDialogOpenAtom);
 
   /** マンダラート機能変更 */
   const bottomNavChange = (e, newValue) => {
@@ -49,7 +51,7 @@ const BottomNav = (props) => {
         >
           <Tooltip title={whenAchievement}
             arrow
-            open={(selectYmFunc === 0 || bottomNavValue !== 2)}
+            open={(selectYmFunc === 0 || bottomNavValue !== 2) && !checkListDialogOpen}
             placement="bottom"
             sx={{
               mt: '2px'
@@ -62,7 +64,7 @@ const BottomNav = (props) => {
           </Tooltip>
           <Tooltip title={targetMessage}
             arrow
-            open={true}
+            open={!checkListDialogOpen}
             placement="bottom"
           >
             <BottomNavigationAction 
