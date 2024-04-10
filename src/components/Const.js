@@ -1,6 +1,6 @@
 export const AUTHOR = "Yusuke Nomura";
 
-export const SELECT_YYYY_LIST = [2024,2025];
+export const SELECT_YYYY_LIST = [2024, 2025];
 
 /** テーマ */
 export const THEME = {
@@ -8,11 +8,11 @@ export const THEME = {
     primary: {
       light: '#a3cddd',
       main: '#96bfd3',
-      contrastText:'#fff'
+      contrastText: '#fff'
     },
     error: {
       main: '#cd4338',
-      contrastText:'#fff'
+      contrastText: '#fff'
     },
     background: {
       default: '#f6f8f7',

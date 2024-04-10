@@ -14,8 +14,8 @@ const ExplanatoryNote = (props) => {
         flexWrap: 'wrap',
         position: 'fixed'
         , top: 1
-        , right: 5 
-        ,'& > :not(style)': {
+        , right: 5
+        , '& > :not(style)': {
           m: 1,
           width: 170,
           height: 110,
@@ -34,16 +34,16 @@ const ExplanatoryNote = (props) => {
             <SquareIcon className='achievement-cell-level-2' />
           </Grid>
           <Grid item xs={6} md={10}>
-          {MESSAGE.ACHIEVEMENT_LEVEL_2}
+            {MESSAGE.ACHIEVEMENT_LEVEL_2}
           </Grid>
           <Grid item xs={6} md={2}>
             <SquareIcon className='achievement-cell-level-3' />
           </Grid>
           <Grid item xs={6} md={10}>
-          {MESSAGE.ACHIEVEMENT_LEVEL_3}
+            {MESSAGE.ACHIEVEMENT_LEVEL_3}
           </Grid>
         </Grid>
-        
+
       </Paper>
     </Box>
   );

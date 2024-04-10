@@ -15,13 +15,13 @@ const MandalartCellRow = (props) => {
         const rowIndex = props.rowIndex;
         const culcIdx = idx + (rowIndex * 9);
         let isCenter = (idx % 3 === 1) ? true : false;
-        if(rowIndex % 3 !== 1) isCenter = false;
+        if (rowIndex % 3 !== 1) isCenter = false;
         return (
           <MandalartCell key={culcIdx} idx={culcIdx} isCenter={isCenter} />
         );
       })}
     </Box>
-   );
+  );
 }
 
 export default MandalartCellRow;

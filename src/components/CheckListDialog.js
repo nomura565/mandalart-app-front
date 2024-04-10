@@ -152,7 +152,7 @@ const CheckListDialog = (props) => {
       {isGraph
         ?
         <DialogContent sx={{
-          minHeight:"400px"
+          minHeight: "400px"
         }}>
           <Grid container spacing={2}>
             <Box
@@ -225,7 +225,7 @@ const CheckListDialog = (props) => {
         </DialogContent>
         :
         <DialogContent sx={{
-          minHeight:"400px"
+          minHeight: "400px"
         }}>
           <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
             <InputLabel
@@ -260,13 +260,13 @@ const CheckListDialog = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {checkList.filter(row => { 
-                      if(department !== ""){
-                        return (row.department_id === department);
-                      } else {
-                        return row;
-                      }
-                    }).map((row) => (
+                {checkList.filter(row => {
+                  if (department !== "") {
+                    return (row.department_id === department);
+                  } else {
+                    return row;
+                  }
+                }).map((row) => (
                   <TableRow
                     key={row.user_id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

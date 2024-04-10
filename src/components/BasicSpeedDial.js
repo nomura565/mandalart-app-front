@@ -13,16 +13,16 @@ import { MESSAGE, ROLE } from './../components/Const';
 import { format } from 'react-string-format';
 import { formatDateToYM } from './../components/FormatDate';
 import html2canvas from 'html2canvas';
-import {getSession} from './../components/CommonFunc';
+import { getSession } from './../components/CommonFunc';
 
-import { 
+import {
   clearAllDialogOpenAtom
   , saveDialogOpenAtom
   , whenDataAtom
   , bottomNavValueAtom
   , selectYmFuncAtom
   , selectYmAtom
-   } from './../components/Atoms';
+} from './../components/Atoms';
 
 const BasicSpeedDial = (props) => {
 
@@ -49,20 +49,20 @@ const BasicSpeedDial = (props) => {
     const target = props.element;
     html2canvas(target).then(canvas => {
       const targetImgUri = canvas.toDataURL("img/png");
-      saveAsImage(targetImgUri); 
+      saveAsImage(targetImgUri);
     });
   }
 
   const saveAsImage = uri => {
     const downloadLink = document.createElement("a");
-  
+
     if (typeof downloadLink.download === "string") {
       downloadLink.href = uri;
-  
+
       // ファイル名
       let fileNm = whenData;
       //成長記録タブ押下、表示押下時は表示中の年月のデータ
-      if(bottomNavValue === 2 && selectYmFunc === 1){
+      if (bottomNavValue === 2 && selectYmFunc === 1) {
         fileNm = selectYm;
       }
 
@@ -81,12 +81,12 @@ const BasicSpeedDial = (props) => {
   const yyyymm = formatDateToYM(new Date());
 
   let actions = [
-    { adminUse: false, icon: <SaveIcon  color='primary'/>, name: format(MESSAGE.SAVE_SPEED_DIAL, yyyymm), onClick:saveDialogOpenExecute },
-    { adminUse: true, icon: <CameraAltIcon />, name: MESSAGE.OUTPUT_SPEED_DIAL, onClick:outputExecute },
-    { adminUse: false, icon: <DeleteIcon color='error'/>, name: MESSAGE.CLEAR_ALL_SPEED_DIAL, onClick:clearAllDialogOpenExecute },
+    { adminUse: false, icon: <SaveIcon color='primary' />, name: format(MESSAGE.SAVE_SPEED_DIAL, yyyymm), onClick: saveDialogOpenExecute },
+    { adminUse: true, icon: <CameraAltIcon />, name: MESSAGE.OUTPUT_SPEED_DIAL, onClick: outputExecute },
+    { adminUse: false, icon: <DeleteIcon color='error' />, name: MESSAGE.CLEAR_ALL_SPEED_DIAL, onClick: clearAllDialogOpenExecute },
   ];
 
-  if(isAdmin){
+  if (isAdmin) {
     actions = actions.filter(action => action.adminUse);
   }
 
@@ -94,10 +94,12 @@ const BasicSpeedDial = (props) => {
     <Box sx={{ transform: 'translateZ(0px)', flexGrow: 1 }}>
       <SpeedDial
         ariaLabel="SpeedDial basic"
-        sx={{ position: 'fixed'
-        , bottom: 5
-        , right: 0 
-        , top:'auto' }}
+        sx={{
+          position: 'fixed'
+          , bottom: 5
+          , right: 0
+          , top: 'auto'
+        }}
         icon={<SpeedDialIcon />}
       >
         {actions.map((action) => (
@@ -109,14 +111,14 @@ const BasicSpeedDial = (props) => {
           />
         ))}
       </SpeedDial>
-      <BasicDialog 
+      <BasicDialog
         open={clearAllDialogOpen}
         agreeFunc={props.clearAllExecute}
         dialogKind="clearAllDialog"
         title={MESSAGE.CLEAR_ALL_DIALOG_TITLE}
         content={MESSAGE.CLEAR_ALL_DIALOG_CONTENT}
       />
-      <BasicDialog 
+      <BasicDialog
         open={saveDialogOpen}
         agreeFunc={props.saveExecute}
         dialogKind="saveDialog"

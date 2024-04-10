@@ -1,12 +1,12 @@
 import TextField from '@mui/material/TextField';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-import { 
+import {
   textFieldDisabledAtom
   , bottomNavValueAtom
   , mandalartCellListAtomsAtom
   , selectYmFuncAtom
-   } from './../components/Atoms';
+} from './../components/Atoms';
 
 const MandalartCell = (props) => {
 
@@ -69,19 +69,19 @@ const MandalartCell = (props) => {
   let isTop = false;
   let isRight = false;
   let isBottom = false;
-  if(props.idx >= 0 && props.idx <= 8) {
-      isTop = true;
+  if (props.idx >= 0 && props.idx <= 8) {
+    isTop = true;
   }
-  if((props.idx >= 18 && props.idx <= 26) 
+  if ((props.idx >= 18 && props.idx <= 26)
     || (props.idx >= 45 && props.idx <= 53)
     || (props.idx >= 72 && props.idx <= 80)
-  ){
+  ) {
     isBottom = true;
   }
-  if(props.idx % 3 === 0) {
+  if (props.idx % 3 === 0) {
     isLeft = true;
   }
-  if(props.idx % 3 === 2) {
+  if (props.idx % 3 === 2) {
     isRight = true;
   }
 
@@ -93,10 +93,10 @@ const MandalartCell = (props) => {
   const selectYmFunc = useAtomValue(selectYmFuncAtom);
 
   let cellClass = "mandalart-cell";
-  if(isTop) cellClass = `${cellClass} mandalart-cell-top`;
-  if(isBottom) cellClass = `${cellClass} mandalart-cell-bottom`;
-  if(isLeft) cellClass = `${cellClass} mandalart-cell-left`;
-  if(isRight) cellClass = `${cellClass} mandalart-cell-right`;
+  if (isTop) cellClass = `${cellClass} mandalart-cell-top`;
+  if (isBottom) cellClass = `${cellClass} mandalart-cell-bottom`;
+  if (isLeft) cellClass = `${cellClass} mandalart-cell-left`;
+  if (isRight) cellClass = `${cellClass} mandalart-cell-right`;
 
   const centerCellClass = `${cellClass} center-cell`;
   //比較してレベルが違うセルを点滅させるのは以下の時
@@ -105,26 +105,26 @@ const MandalartCell = (props) => {
   //比較タブが押下されている
   let achievementCellClass = (mandalartCell.isGrow && bottomNavValue === 2 && selectYmFunc === 0) ? cellClass + " achievement-cell-grow-level-" : cellClass + " achievement-cell-level-";
 
-  if(syncCellIdx !== 0) isSync = true;
+  if (syncCellIdx !== 0) isSync = true;
 
   /** セルクラス取得 */
-  const getCellClass= () => {
-    const defaultClass = (props.isCenter ) ? centerCellClass : cellClass;
+  const getCellClass = () => {
+    const defaultClass = (props.isCenter) ? centerCellClass : cellClass;
     let afterClass = achievementCellClass + mandalartCell.achievementLevel;
-    if(bottomNavValue == 0) afterClass = afterClass + " mandalart-cell-pointer";
+    if (bottomNavValue == 0) afterClass = afterClass + " mandalart-cell-pointer";
 
-    if(mandalartCell.achievementLevel === 0){
+    if (mandalartCell.achievementLevel === 0) {
       afterClass = defaultClass;
     }
     return afterClass;
   }
   /** マンダラート機能変更 */
   const backGroundColorChange = () => {
-    if(bottomNavValue === 0){
+    if (bottomNavValue === 0) {
       const nextAchievementLevel = (mandalartCell.achievementLevel === 3) ? 0 : mandalartCell.achievementLevel + 1;
       setMandalartCell((oldValue) => ({ ...oldValue, achievementLevel: nextAchievementLevel }));
       setMandalartCell((oldValue) => ({ ...oldValue, tmpAchievementLevel: nextAchievementLevel }));
-      if(isSync){
+      if (isSync) {
         setSyncMandalartCell((oldValue) => ({ ...oldValue, achievementLevel: nextAchievementLevel }));
         setSyncMandalartCell((oldValue) => ({ ...oldValue, tmpAchievementLevel: nextAchievementLevel }));
       }
@@ -135,24 +135,24 @@ const MandalartCell = (props) => {
   const textFieldChange = (e) => {
     setMandalartCell((oldValue) => ({ ...oldValue, textFieldValue: e.target.value }));
     setMandalartCell((oldValue) => ({ ...oldValue, tmpTextFieldValue: e.target.value }));
-    if(isSync){
+    if (isSync) {
       setSyncMandalartCell((oldValue) => ({ ...oldValue, textFieldValue: e.target.value }));
       setSyncMandalartCell((oldValue) => ({ ...oldValue, tmpTextFieldValue: e.target.value }));
     }
   };
-  
+
   return (
     <div onClick={backGroundColorChange}>
-    <TextField
-      className={getCellClass()}
-      multiline
-      rows={3}
-      value={mandalartCell.textFieldValue}
-      sx={{ pointerEvents:textFieldDisabled }}
-      onChange={textFieldChange}
-    />
+      <TextField
+        className={getCellClass()}
+        multiline
+        rows={3}
+        value={mandalartCell.textFieldValue}
+        sx={{ pointerEvents: textFieldDisabled }}
+        onChange={textFieldChange}
+      />
     </div>
-   );
+  );
 }
 
 export default MandalartCell;

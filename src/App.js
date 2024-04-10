@@ -6,12 +6,12 @@ import { useAtomValue } from 'jotai';
 import Login from './routes/Login';
 import SignUp from './routes/SignUp';
 import Top from './routes/Top';
-import { 
+import {
   getSession
-   } from './components/CommonFunc';
-import { 
+} from './components/CommonFunc';
+import {
   loggedInAtom
-   } from './components/Atoms';
+} from './components/Atoms';
 
 function App() {
   const loggedIn = useAtomValue(loggedInAtom);

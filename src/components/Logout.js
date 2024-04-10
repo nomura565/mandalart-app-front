@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { MESSAGE } from './../components/Const';
 
 import { removeSession } from './../components/CommonFunc';
-import { 
+import {
   isLoadingAtom
   , loggedInAtom
-   } from './../components/Atoms';
+} from './../components/Atoms';
 
 const Logout = (props) => {
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const Logout = (props) => {
     >
       {MESSAGE.LOGOUT}
     </Button>
-   );
+  );
 }
 
 export default Logout;

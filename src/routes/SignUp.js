@@ -24,10 +24,10 @@ import { MESSAGE, API_URL, THEME } from './../components/Const';
 import { isNullOrEmpty, isNull } from './../components/CommonFunc';
 import Progress from './../components/Progress';
 import SuccessMessage from './../components/SuccessMessage';
-import { 
+import {
   isLoadingAtom
   , successMessageAtom
-   } from './../components/Atoms';
+} from './../components/Atoms';
 
 function SignUp() {
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
@@ -114,7 +114,7 @@ function SignUp() {
     setErrorConfirmPassword(false);
     setErrorDepartment(false);
 
-    if(isNullOrEmpty(userId)){
+    if (isNullOrEmpty(userId)) {
       setErrorUserId(true);
       setErrorMessageUserId(MESSAGE.USERID_EMPTY);
       result = false;
@@ -131,19 +131,19 @@ function SignUp() {
       }
     }
 
-    if(isNullOrEmpty(userName)){
+    if (isNullOrEmpty(userName)) {
       setErrorUserName(true);
       setErrorMessageUserName(MESSAGE.USERNAME_EMPTY);
       result = false;
     }
 
-    if(isNull(department)){
+    if (isNull(department)) {
       setErrorDepartment(true);
       setErrorMessageDepartment(MESSAGE.DEPARTMENT_EMPTY);
       result = false;
     }
 
-    if(isNullOrEmpty(password)){
+    if (isNullOrEmpty(password)) {
       setErrorPassword(true);
       setErrorMessagePassword(MESSAGE.PASSWORD_EMPTY);
       result = false;
@@ -151,18 +151,18 @@ function SignUp() {
       //パスワードは8文字以上、英数字と記号を組み合わせてください
       //if (!password.match(/^(?=.*[a-z])(?=.*[.?/-])[a-zA-Z0-9.?/-]{8,24}$/)){
       //パスワードは8文字以上24文字以下で設定してください
-      if (!password.match(/^[a-zA-Z0-9]{8,24}$/)){
+      if (!password.match(/^[a-zA-Z0-9]{8,24}$/)) {
         setErrorPassword(true);
         setErrorMessagePassword(MESSAGE.PASSWORD_INVALID);
         result = false;
       }
     }
 
-    if(isNullOrEmpty(confirmPassword)){
+    if (isNullOrEmpty(confirmPassword)) {
       setErrorConfirmPassword(true);
       setErrorMessageConfirmPassword(MESSAGE.CONFIRM_PASSWORD_EMPTY);
       result = false;
-    } else if(password !== confirmPassword){
+    } else if (password !== confirmPassword) {
       setErrorConfirmPassword(true);
       setErrorMessageConfirmPassword(MESSAGE.CONFIRM_PASSWORD_INVALID);
       result = false;
@@ -184,9 +184,9 @@ function SignUp() {
         return false;
       })
       .catch((error) => {
-        if(error.response?.status === 404){
+        if (error.response?.status === 404) {
           return true;
-        }else{
+        } else {
           errorFunc(error.message);
           return false;
         }
@@ -197,7 +197,7 @@ function SignUp() {
   /** エラー処理 */
   const errorFunc = (_message) => {
     let message = MESSAGE.SIGN_UP_FAIL;
-    if(!isNull(_message)) message = _message;
+    if (!isNull(_message)) message = _message;
     setIsLoading(false);
     setErrorUserId(true);
     setErrorMessageUserId(message);
@@ -207,11 +207,11 @@ function SignUp() {
   const onSubmit = async (event) => {
     event.preventDefault();
 
-    if(!isValidate()){
+    if (!isValidate()) {
       return;
     }
 
-    if(!await isDuplicateUserId()){
+    if (!await isDuplicateUserId()) {
       return;
     }
 
@@ -232,7 +232,7 @@ function SignUp() {
           setTimeout(() => {
             setSuccessMessage("");
           }, "2000");
-        }else{
+        } else {
           errorFunc();
           return;
         }
@@ -248,120 +248,120 @@ function SignUp() {
 
   return (
     <div className="wrapper">
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <SuccessMessage width="calc(32%)" />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'primary' }}>
-            <PersonIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            {MESSAGE.SIGNUP}
-          </Typography>
-          <Box component="form" noValidate onSubmit={onSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} className='grid-login-input'>
-                <TextField
-                  required
-                  error={errorUserId}
-                  fullWidth
-                  id="userId"
-                  label="User Id"
-                  name="userId"
-                  autoComplete="userID"
-                  onChange={userIdChange}
-                  helperText={errorMessageUserId}
-                />
-              </Grid>
-              <Grid item xs={12} className='grid-login-input'>
-                <TextField
-                  required
-                  error={errorUserName}
-                  fullWidth
-                  id="userName"
-                  label="User Name"
-                  name="userName"
-                  autoComplete="userNamwe"
-                  onChange={userNameChange}
-                  helperText={errorMessageUserName}
-                />
-              </Grid>
-              <Grid item xs={12} className='grid-login-input'>
-                <TextField
-                  id="department"
-                  select
-                  required
-                  fullWidth
-                  error={errorDepartment}
-                  label="Department"
-                  onChange={departmentChange}
-                  helperText={errorMessageDepartment}
-                >
-                  {departmentList.map((department) => (
-                    <MenuItem key={department.department_id} value={department.department_id}>
-                      {department.department_name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} className='grid-login-input'>
-                <TextField
-                  required
-                  fullWidth
-                  error={errorPassword}
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  onChange={passwordChange}
-                  helperText={errorMessagePassword}
-                />
-              </Grid>
-              <Grid item xs={12} className='grid-login-input'>
-                <TextField
-                  required
-                  fullWidth
-                  error={errorConfirmPassword}
-                  name="confirmPassword"
-                  label="ConfirmPassword"
-                  type="password"
-                  id="confirmPassword"
-                  onChange={confirmPasswordChange}
-                  helperText={errorMessageConfirmPassword}
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={isLoading || submitDisabled}
-              startIcon={<AssignmentIndIcon />}
-            >
+      <ThemeProvider theme={defaultTheme}>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <SuccessMessage width="calc(32%)" />
+          <Box
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: 'primary' }}>
+              <PersonIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
               {MESSAGE.SIGNUP}
-            </Button>
-            <Progress/>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-              <Link href="/" variant="body2">
-                  {MESSAGE.BACK_TO_TOP}
-                </Link>
+            </Typography>
+            <Box component="form" noValidate onSubmit={onSubmit} sx={{ mt: 3 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} className='grid-login-input'>
+                  <TextField
+                    required
+                    error={errorUserId}
+                    fullWidth
+                    id="userId"
+                    label="User Id"
+                    name="userId"
+                    autoComplete="userID"
+                    onChange={userIdChange}
+                    helperText={errorMessageUserId}
+                  />
+                </Grid>
+                <Grid item xs={12} className='grid-login-input'>
+                  <TextField
+                    required
+                    error={errorUserName}
+                    fullWidth
+                    id="userName"
+                    label="User Name"
+                    name="userName"
+                    autoComplete="userNamwe"
+                    onChange={userNameChange}
+                    helperText={errorMessageUserName}
+                  />
+                </Grid>
+                <Grid item xs={12} className='grid-login-input'>
+                  <TextField
+                    id="department"
+                    select
+                    required
+                    fullWidth
+                    error={errorDepartment}
+                    label="Department"
+                    onChange={departmentChange}
+                    helperText={errorMessageDepartment}
+                  >
+                    {departmentList.map((department) => (
+                      <MenuItem key={department.department_id} value={department.department_id}>
+                        {department.department_name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+                <Grid item xs={12} className='grid-login-input'>
+                  <TextField
+                    required
+                    fullWidth
+                    error={errorPassword}
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    onChange={passwordChange}
+                    helperText={errorMessagePassword}
+                  />
+                </Grid>
+                <Grid item xs={12} className='grid-login-input'>
+                  <TextField
+                    required
+                    fullWidth
+                    error={errorConfirmPassword}
+                    name="confirmPassword"
+                    label="ConfirmPassword"
+                    type="password"
+                    id="confirmPassword"
+                    onChange={confirmPasswordChange}
+                    helperText={errorMessageConfirmPassword}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                disabled={isLoading || submitDisabled}
+                startIcon={<AssignmentIndIcon />}
+              >
+                {MESSAGE.SIGNUP}
+              </Button>
+              <Progress />
+              <Grid container justifyContent="flex-end">
+                <Grid item>
+                  <Link href="/" variant="body2">
+                    {MESSAGE.BACK_TO_TOP}
+                  </Link>
+                </Grid>
+              </Grid>
+            </Box>
           </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
-  </div>
+        </Container>
+      </ThemeProvider>
+    </div>
   );
 }
 

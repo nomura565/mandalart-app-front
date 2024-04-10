@@ -23,10 +23,10 @@ import LoginIcon from '@mui/icons-material/Login';
 import { AUTHOR, MESSAGE, API_URL, THEME } from './../components/Const';
 import { isNullOrEmpty, setSession, isNull } from './../components/CommonFunc';
 import Progress from './../components/Progress';
-import { 
+import {
   isLoadingAtom
   , loggedInAtom
-   } from './../components/Atoms';
+} from './../components/Atoms';
 
 function Login() {
   const navigate = useNavigate();
@@ -57,13 +57,13 @@ function Login() {
     setErrorUserId(false);
     setErrorPassword(false);
 
-    if(isNullOrEmpty(userId)){
+    if (isNullOrEmpty(userId)) {
       setErrorUserId(true);
       setErrorMessageUserId(MESSAGE.USERID_EMPTY);
       result = false;
     }
 
-    if(isNullOrEmpty(password)){
+    if (isNullOrEmpty(password)) {
       setErrorPassword(true);
       setErrorMessagePassword(MESSAGE.PASSWORD_EMPTY);
       result = false;
@@ -76,7 +76,7 @@ function Login() {
   const onSubmit = (event) => {
     event.preventDefault();
 
-    if(!isValidate()){
+    if (!isValidate()) {
       return;
     }
 
@@ -93,7 +93,7 @@ function Login() {
           setLoggedIn(true);
           setSession(response.data);
           navigate("/Top");
-        }else{
+        } else {
           errorFunc();
           return;
         }
@@ -103,7 +103,7 @@ function Login() {
         errorFunc((error.response?.status === 404)
           ? undefined
           : error.message
-          );
+        );
         return;
       });
   }
@@ -111,7 +111,7 @@ function Login() {
   /** エラー処理 */
   const errorFunc = (_message) => {
     let message = MESSAGE.LOGIN_FAIL;
-    if(!isNull(_message)) message = _message;
+    if (!isNull(_message)) message = _message;
     setIsLoading(false);
     setErrorUserId(true);
     setErrorPassword(true);
@@ -136,77 +136,77 @@ function Login() {
 
   return (
     <div className="wrapper">
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'primary.light' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            {MESSAGE.TITLE}
-          </Typography>
-          <Box component="form" noValidate onSubmit={onSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} className='grid-login-input'>
-                <TextField
-                  required
-                  error={errorUserId}
-                  fullWidth
-                  id="userId"
-                  label="User Id"
-                  name="userId"
-                  autoComplete="userID"
-                  onChange={userIdChange}
-                  helperText={errorMessageUserId}
-                />
+      <ThemeProvider theme={defaultTheme}>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <Box
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: 'primary.light' }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              {MESSAGE.TITLE}
+            </Typography>
+            <Box component="form" noValidate onSubmit={onSubmit} sx={{ mt: 3 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} className='grid-login-input'>
+                  <TextField
+                    required
+                    error={errorUserId}
+                    fullWidth
+                    id="userId"
+                    label="User Id"
+                    name="userId"
+                    autoComplete="userID"
+                    onChange={userIdChange}
+                    helperText={errorMessageUserId}
+                  />
+                </Grid>
+                <Grid item xs={12} className='grid-login-input'>
+                  <TextField
+                    required
+                    fullWidth
+                    error={errorPassword}
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                    onChange={passwordChange}
+                    helperText={errorMessagePassword}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} className='grid-login-input'>
-                <TextField
-                  required
-                  fullWidth
-                  error={errorPassword}
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  onChange={passwordChange}
-                  helperText={errorMessagePassword}
-                />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                disabled={isLoading}
+                startIcon={<LoginIcon />}
+              >
+                {MESSAGE.LOGIN}
+              </Button>
+              <Progress />
+              <Grid container justifyContent="flex-end">
+                <Grid item>
+                  <Link href="/SignUp" variant="body2">
+                    {MESSAGE.LOGIN_REMARKS}
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={isLoading}
-              startIcon={<LoginIcon />}
-            >
-              {MESSAGE.LOGIN}
-            </Button>
-            <Progress/>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="/SignUp" variant="body2">
-                  {MESSAGE.LOGIN_REMARKS}
-                </Link>
-              </Grid>
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-        <Copyright sx={{ mt: 5 }} />
-      </Container>
-    </ThemeProvider>
-  </div>
+          <Copyright sx={{ mt: 5 }} />
+        </Container>
+      </ThemeProvider>
+    </div>
   );
 }
 

@@ -35,7 +35,7 @@ import ExplanatoryNote from './../components/ExplanatoryNote';
 import AchievementGauge from './../components/AchievementGauge';
 import CheckListDialog from '../components/CheckListDialog';
 
-import { 
+import {
   isLoadingAtom
   , selectYmFuncAtom
   , textFieldDisabledAtom
@@ -53,7 +53,7 @@ import {
   , saveDialogOpenAtom
   , checkListDialogOpenAtom
   , departmentListAtom
-   } from './../components/Atoms';
+} from './../components/Atoms';
 
 function Top() {
   const defaultTheme = createTheme(THEME);
@@ -82,7 +82,7 @@ function Top() {
   const [department, setDepartment] = useState("");
   const [departmentList, setDepartmentList] = useAtom(departmentListAtom);
 
-  const mandalartCellList= useAtomValue(mandalartCellListAtomsAtom);
+  const mandalartCellList = useAtomValue(mandalartCellListAtomsAtom);
   //愚直に0～81までのatomを作る　愚直すぎるのであくまで暫定
   const [mandalartCell0, setMandalartCell0] = useAtom(mandalartCellList[0]);
   const [mandalartCell1, setMandalartCell1] = useAtom(mandalartCellList[1]);
@@ -205,14 +205,14 @@ function Top() {
     setCheckListDialogOpen(true);
 
   }
-  
+
   /** 達成率の取得 */
   const getTotalAchievementLevel = () => {
     //9*9マスに3レベルまであるとすると(3*81)
-    let total = getMandalartCellArrayList().reduce(function(sum, element){
+    let total = getMandalartCellArrayList().reduce(function (sum, element) {
       return sum + element.achievementLevel;
     }, 0);
-    let culc = total / (3*81);
+    let culc = total / (3 * 81);
     culc = parseFloat(culc.toFixed(3));
     //console.log("culc"+ culc);
     //console.log("culc2:"+ culc2);
@@ -222,20 +222,20 @@ function Top() {
 
   /** マンダラート機能変更 */
   const bottomNavChange = (newValue) => {
-    if(isAdmin) return;
+    if (isAdmin) return;
     setBottomNavValue(newValue);
-    if(newValue === 1){
+    if (newValue === 1) {
       setTextFieldDisabled('auto');
-    }else{
+    } else {
       setTextFieldDisabled('none');
     }
 
-    if(newValue === 2){
+    if (newValue === 2) {
       getMandalart(selectUserId, selectYm, 0);
       setSelectYmFunc(0);
     } else {
       //成長記録→他のタブに移動したときに現在の実績に戻す
-      if(bottomNavValue === 2) {
+      if (bottomNavValue === 2) {
         let mandalartCellArrayList = getMandalartCellArrayList();
         let SetMandalartCellArrayList = getSetMandalartCellArrayList();
         SetMandalartCellArrayList.forEach((setCell, idx) => {
@@ -252,7 +252,7 @@ function Top() {
     let sendData = {
       user_id: selectUserId
       , yyyymm: currentYyyymm
-      , achievement_gauge_value:achievementGaugeValue
+      , achievement_gauge_value: achievementGaugeValue
 
     };
     getMandalartCellArrayList().forEach((cell, idx) => {
@@ -305,9 +305,9 @@ function Top() {
     setErrorMessage("");
     setIsSuccess(false);
     setWhenAchievement("");
-    if(pageLoadFlg) {
+    if (pageLoadFlg) {
       getUserList();
-      if(isAdmin) {
+      if (isAdmin) {
         getDepartmentList();
       }
     }
@@ -359,11 +359,11 @@ function Top() {
         if (response.status === 200) {
           setUserList(response.data);
           setIsLoading(false);
-          if(!isAdmin){
+          if (!isAdmin) {
             setSelectUserId(userId);
             getMandalart(userId);
           }
-        }else{
+        } else {
           return;
         }
 
@@ -385,13 +385,13 @@ function Top() {
     return axios
       .post(API_URL.GET_MANDALART, {
         user_id: sendUserId
-      , yyyymm: sendYyyymm
+        , yyyymm: sendYyyymm
       })
       .then((response) => {
         setIsLoading(false);
         if (response.status === 200) {
           let SetMandalartCellArrayList = getSetMandalartCellArrayList();
-          if(!sendYyyymm) {
+          if (!sendYyyymm) {
             SetMandalartCellArrayList.forEach((setCell, idx) => {
               let cell = getObjectCopy(initMandalartCell);
 
@@ -411,7 +411,7 @@ function Top() {
             //年月比較でマンダラート取得したパターン
             let mandalartCellArrayList = getMandalartCellArrayList();
             SetMandalartCellArrayList.forEach((setCell, idx) => {
-              if(mandalartCellArrayList[idx].achievementLevel !== response.data[`achievement_level_${idx}`]){
+              if (mandalartCellArrayList[idx].achievementLevel !== response.data[`achievement_level_${idx}`]) {
                 setCell((oldValue) => ({ ...oldValue, isGrow: true }));
               } else {
                 setCell((oldValue) => ({ ...oldValue, isGrow: false }));
@@ -419,7 +419,7 @@ function Top() {
               setCell((oldValue) => ({ ...oldValue, compareAchievementLevel: response.data[`achievement_level_${idx}`] }));
               setCell((oldValue) => ({ ...oldValue, compareTextFieldValue: response.data[`target_${idx}`] }));
               //表示押下
-              if(sendSelectYmFunc === 1){
+              if (sendSelectYmFunc === 1) {
                 setCell((oldValue) => ({ ...oldValue, achievementLevel: response.data[`achievement_level_${idx}`] }));
                 setCell((oldValue) => ({ ...oldValue, textFieldValue: response.data[`target_${idx}`] }));
                 setCell((oldValue) => ({ ...oldValue, isGrow: false }));
@@ -429,11 +429,11 @@ function Top() {
                 //tmpAchievementLevelはまだ反映されてないので引数と比較する
                 let compare_level = mandalartCellArrayList[idx].tmpAchievementLevel;
                 let compare_field_value = mandalartCellArrayList[idx].tmpTextFieldValue;
-                if(_current_data){
+                if (_current_data) {
                   compare_level = _current_data[`achievement_level_${idx}`];
                   compare_field_value = _current_data[`target_${idx}`];
                 }
-                if(mandalartCellArrayList[idx].achievementLevel !== compare_level){
+                if (mandalartCellArrayList[idx].achievementLevel !== compare_level) {
                   setCell((oldValue) => ({ ...oldValue, isGrow: true }));
                 }
                 setCell((oldValue) => ({ ...oldValue, achievementLevel: compare_level }));
@@ -442,16 +442,16 @@ function Top() {
             });
           }
           return response.data;
-        }else{
+        } else {
           return;
         }
-        
+
       })
       .catch((error) => {
         setIsLoading(false);
         //データなしは正常として扱う
-        if(error.response?.status === 404){
-          if(!sendYyyymm) {
+        if (error.response?.status === 404) {
+          if (!sendYyyymm) {
             clearAllExecute();
             setTargetMessage(MESSAGE.TARGET_MESSAGE);
             setWhenAchievement("");
@@ -464,7 +464,7 @@ function Top() {
               setCell((oldValue) => ({ ...oldValue, compareAchievementLevel: 0 }));
               setCell((oldValue) => ({ ...oldValue, compareTextFieldValue: "" }));
               //表示押下
-              if(sendSelectYmFunc === 1){
+              if (sendSelectYmFunc === 1) {
                 setCell((oldValue) => ({ ...oldValue, achievementLevel: 0 }));
                 setCell((oldValue) => ({ ...oldValue, textFieldValue: "" }));
               }
@@ -482,19 +482,19 @@ function Top() {
     setSelectUserId(e.target.value);
     let _yyyymm = false;
     //成長記録が選択　かつ　表示タブが押下されている　かつ　比較する年月が選択されている　なら比較する年月のデータを取得
-    if(bottomNavValue === 2 && selectYmFunc === 1 && selectYm !== ""){
+    if (bottomNavValue === 2 && selectYmFunc === 1 && selectYm !== "") {
       _yyyymm = selectYm;
     }
     //管理者は最新の実績と比較する年月を取得する
-    if(isAdmin){
+    if (isAdmin) {
       getMandalart(e.target.value)
-      .then((current_data) => {
-        getMandalart(e.target.value, selectYm, null, current_data)
-      });
+        .then((current_data) => {
+          getMandalart(e.target.value, selectYm, null, current_data)
+        });
     } else {
       getMandalart(e.target.value, _yyyymm);
     }
-    
+
   }
 
   /** 選択年月変更 */
@@ -505,7 +505,7 @@ function Top() {
 
   /** 選択年月機能変更 */
   const selectYmFuncChange = (e, newAlignment) => {
-    if(newAlignment !== null) {
+    if (newAlignment !== null) {
       setSelectYmFunc(newAlignment);
       getMandalart(selectUserId, selectYm, newAlignment);
     }
@@ -513,31 +513,31 @@ function Top() {
 
   return (
     <div className="wrapper">
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="md">
-        <CssBaseline />
-        <Progress/>
-        <ErrorMessage />
-        <SuccessMessage />
-        <Box
-          sx={{
-            marginTop: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-          }}
-        >
-          <Grid container spacing={2}>
-            <Box
-              sx={{
-                width: AdjustWidth,
-                display: 'flex',
-              }}
-            >
-              {isAdmin
-                ?
+      <ThemeProvider theme={defaultTheme}>
+        <Container component="main" maxWidth="md">
+          <CssBaseline />
+          <Progress />
+          <ErrorMessage />
+          <SuccessMessage />
+          <Box
+            sx={{
+              marginTop: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+            }}
+          >
+            <Grid container spacing={2}>
+              <Box
+                sx={{
+                  width: AdjustWidth,
+                  display: 'flex',
+                }}
+              >
+                {isAdmin
+                  ?
                   <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                    <InputLabel 
+                    <InputLabel
                       id="select-department-label"
                     >
                       {MESSAGE.DEPARTMENT}
@@ -558,142 +558,142 @@ function Top() {
                       ))}
                     </Select>
                   </FormControl>
-                :
+                  :
                   ""
-              }
-              <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                <InputLabel id="select-user-label">{MESSAGE.SELECT_USER_LABEL}</InputLabel>
-                <Select
-                  labelId="select-user-label"
-                  id="select-user"
-                  label={MESSAGE.SELECT_USER_LABEL}
-                  onChange={selectUserIdChange}
-                  value={selectUserId}
-                  disabled={!isAdmin}
-                >
-                  {userList.filter(user => { 
-                      if(department !== ""){
+                }
+                <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                  <InputLabel id="select-user-label">{MESSAGE.SELECT_USER_LABEL}</InputLabel>
+                  <Select
+                    labelId="select-user-label"
+                    id="select-user"
+                    label={MESSAGE.SELECT_USER_LABEL}
+                    onChange={selectUserIdChange}
+                    value={selectUserId}
+                    disabled={!isAdmin}
+                  >
+                    {userList.filter(user => {
+                      if (department !== "") {
                         return (user.department_id === department);
                       } else {
                         return user;
                       }
                     }).map((user) => {
-                    return (
-                      <MenuItem key={user.user_id} value={user.user_id}>{user.user_name}</MenuItem>
-                      );
-                  })}
-                </Select>
-              </FormControl>
-              {isAdmin
-              ?
-                <FormControl sx={{ m: 1 }} size="small">
-                  <IconButton 
-                    aria-label="checkList"
-                    sx={{ 
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      cursor:"pointer",
-                      paddingLeft:"0px"
-                    }}
-                    onClick={openCheckListDialog}
-                  >
-                    <ChecklistIcon/>
-                  </IconButton>
-                  
-                </FormControl>
-              :
-                ""
-              }
-            </Box>
-            <FormControl sx={{ m: 1 }} size="small">
-              {bottomNavValue === 2
-              ?
-              <div>
-              <InputLabel 
-                id="select-ym-label"
-                error={(selectYmFunc !== 0)}
-              >
-                  {(selectYmFunc === 0) ? MESSAGE.SELECT_YM_LABEL : MESSAGE.SELECT_YM_LABEL2}
-              </InputLabel>
-              <Select
-                labelId="select-ym-label"
-                id="select-ym"
-                label={MESSAGE.SELECT_YM_LABEL}
-                onChange={selectYmChange}
-                value={selectYm}
-              >
-                {SELECT_YYYY_LIST.map((yyyy, yyyy_idx) => (
-                    Array(12).fill(0).map((val, i) => {
-                      const ym = yyyy + "/" + (i+1).toString().padStart( 2, '0');
                       return (
-                        <MenuItem value={ym}>{yyyy}年{i+1}月</MenuItem>
+                        <MenuItem key={user.user_id} value={user.user_id}>{user.user_name}</MenuItem>
                       );
-                    })
-                ))}
-              </Select>
-              </div>
-              :
-              ""
-              }
-            </FormControl>
-            
-            <FormControl className="toggle-button" sx={{ m: 1 }} size="small">
-              {bottomNavValue === 2
-              ?
-              <ToggleButtonGroup
-                color="primary"
-                value={selectYmFunc}
-                exclusive
-                onChange={selectYmFuncChange}
-                aria-label="Platform"
-              >
-                <ToggleButton value={0}>{MESSAGE.COMPARE}</ToggleButton>
-                <ToggleButton value={1}>{MESSAGE.SHOW}</ToggleButton>
-              </ToggleButtonGroup>
-              :
-              ""
-              }
-            </FormControl>
-            <Logout />
-          </Grid>
-        </Box>
+                    })}
+                  </Select>
+                </FormControl>
+                {isAdmin
+                  ?
+                  <FormControl sx={{ m: 1 }} size="small">
+                    <IconButton
+                      aria-label="checkList"
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        cursor: "pointer",
+                        paddingLeft: "0px"
+                      }}
+                      onClick={openCheckListDialog}
+                    >
+                      <ChecklistIcon />
+                    </IconButton>
 
-        <BottomNav bottomNavChange={bottomNavChange}/>
-        <Box
-          sx={{
-            marginTop: 2,
-          }}
-        ></Box>
-        <Box
-          id="WholeMandalart"
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <MandalartCellRow rowIndex={0} />
-          <MandalartCellRow rowIndex={1} />
-          <MandalartCellRow rowIndex={2} />
-          <MandalartCellRow rowIndex={3} />
-          <MandalartCellRow rowIndex={4} />
-          <MandalartCellRow rowIndex={5} />
-          <MandalartCellRow rowIndex={6} />
-          <MandalartCellRow rowIndex={7} />
-          <MandalartCellRow rowIndex={8} />
-        </Box>
-        <BasicSpeedDial 
-          clearAllExecute={clearAllExecute}
-          saveExecute={saveExecute}
-          element={document.getElementById("WholeMandalart")}
-        />
-      </Container>
-      <ExplanatoryNote />
-      <AchievementGauge  getTotalAchievementLevel={getTotalAchievementLevel} />
-      <CheckListDialog />
-    </ThemeProvider>
-  </div>
+                  </FormControl>
+                  :
+                  ""
+                }
+              </Box>
+              <FormControl sx={{ m: 1 }} size="small">
+                {bottomNavValue === 2
+                  ?
+                  <div>
+                    <InputLabel
+                      id="select-ym-label"
+                      error={(selectYmFunc !== 0)}
+                    >
+                      {(selectYmFunc === 0) ? MESSAGE.SELECT_YM_LABEL : MESSAGE.SELECT_YM_LABEL2}
+                    </InputLabel>
+                    <Select
+                      labelId="select-ym-label"
+                      id="select-ym"
+                      label={MESSAGE.SELECT_YM_LABEL}
+                      onChange={selectYmChange}
+                      value={selectYm}
+                    >
+                      {SELECT_YYYY_LIST.map((yyyy, yyyy_idx) => (
+                        Array(12).fill(0).map((val, i) => {
+                          const ym = yyyy + "/" + (i + 1).toString().padStart(2, '0');
+                          return (
+                            <MenuItem value={ym}>{yyyy}年{i + 1}月</MenuItem>
+                          );
+                        })
+                      ))}
+                    </Select>
+                  </div>
+                  :
+                  ""
+                }
+              </FormControl>
+
+              <FormControl className="toggle-button" sx={{ m: 1 }} size="small">
+                {bottomNavValue === 2
+                  ?
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={selectYmFunc}
+                    exclusive
+                    onChange={selectYmFuncChange}
+                    aria-label="Platform"
+                  >
+                    <ToggleButton value={0}>{MESSAGE.COMPARE}</ToggleButton>
+                    <ToggleButton value={1}>{MESSAGE.SHOW}</ToggleButton>
+                  </ToggleButtonGroup>
+                  :
+                  ""
+                }
+              </FormControl>
+              <Logout />
+            </Grid>
+          </Box>
+
+          <BottomNav bottomNavChange={bottomNavChange} />
+          <Box
+            sx={{
+              marginTop: 2,
+            }}
+          ></Box>
+          <Box
+            id="WholeMandalart"
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <MandalartCellRow rowIndex={0} />
+            <MandalartCellRow rowIndex={1} />
+            <MandalartCellRow rowIndex={2} />
+            <MandalartCellRow rowIndex={3} />
+            <MandalartCellRow rowIndex={4} />
+            <MandalartCellRow rowIndex={5} />
+            <MandalartCellRow rowIndex={6} />
+            <MandalartCellRow rowIndex={7} />
+            <MandalartCellRow rowIndex={8} />
+          </Box>
+          <BasicSpeedDial
+            clearAllExecute={clearAllExecute}
+            saveExecute={saveExecute}
+            element={document.getElementById("WholeMandalart")}
+          />
+        </Container>
+        <ExplanatoryNote />
+        <AchievementGauge getTotalAchievementLevel={getTotalAchievementLevel} />
+        <CheckListDialog />
+      </ThemeProvider>
+    </div>
   );
 }
 

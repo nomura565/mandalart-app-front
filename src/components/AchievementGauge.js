@@ -3,9 +3,9 @@ import Box from '@mui/material/Box';
 import GaugeChart from 'react-gauge-chart';
 import { useAtomValue } from 'jotai';
 
-import { 
+import {
   achievementGaugeValueAtom
-  } from './../components/Atoms';
+} from './../components/Atoms';
 
 const AchievementGauge = (props) => {
   const achievementGaugeValue = useAtomValue(achievementGaugeValueAtom);
@@ -18,18 +18,18 @@ const AchievementGauge = (props) => {
         flexWrap: 'wrap',
         position: 'fixed'
         , top: 120
-        , right: -30 
-        ,'& > :not(style)': {
+        , right: -30
+        , '& > :not(style)': {
           m: 1,
           width: 200,
           height: 200,
         },
       }}
     >
-      <GaugeChart id="achievemen-gauge" 
-        nrOfLevels={20} 
-        percent={props.getTotalAchievementLevel()} 
-        colors={["#C6E0B4", "#FFC371"]} 
+      <GaugeChart id="achievemen-gauge"
+        nrOfLevels={20}
+        percent={props.getTotalAchievementLevel()}
+        colors={["#C6E0B4", "#FFC371"]}
         style={
           {
             width: 250

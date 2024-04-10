@@ -12,12 +12,12 @@ import { translateNewLine } from './CommonFunc';
 import CircularProgress from '@mui/material/CircularProgress';
 import CheckIcon from '@mui/icons-material/Check';
 
-import { 
+import {
   clearAllDialogOpenAtom
   , saveDialogOpenAtom
   , isLoadingAtom
   , isSuccessAtom
-   } from './../components/Atoms';
+} from './../components/Atoms';
 
 const BasicDialog = (props) => {
   const [clearAllDialogOpen, setClearAllDialogOpen] = useAtom(clearAllDialogOpenAtom);
@@ -27,13 +27,13 @@ const BasicDialog = (props) => {
 
   const handleAgree = () => {
     props.agreeFunc();
-    if(props.dialogKind === "clearAllDialog"){
+    if (props.dialogKind === "clearAllDialog") {
       setClearAllDialogOpen(false);
-    } 
+    }
   };
 
   const handleDisagree = () => {
-    if(props.dialogKind === "clearAllDialog"){
+    if (props.dialogKind === "clearAllDialog") {
       setClearAllDialogOpen(false);
     } else {
       setSaveDialogOpen(false);
@@ -41,48 +41,48 @@ const BasicDialog = (props) => {
   };
 
   const executeButton = () => {
-    if(isLoading) {
+    if (isLoading) {
       return <CircularProgress size={30} />;
     } else {
-      if(isSuccess) {
-        return <CheckIcon color="success"/>;
+      if (isSuccess) {
+        return <CheckIcon color="success" />;
       } else {
-        return <Button 
-                  onClick={handleAgree} 
-                  autoFocus
-                  disabled={isLoading}
-                >
-                  {MESSAGE.EXECUTE}
-                </Button>;
+        return <Button
+          onClick={handleAgree}
+          autoFocus
+          disabled={isLoading}
+        >
+          {MESSAGE.EXECUTE}
+        </Button>;
       }
     }
   };
 
   return (
-      <Dialog
-        open={(props.dialogKind === "clearAllDialog") ? clearAllDialogOpen : saveDialogOpen}
-        onClose={handleDisagree}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {props.title}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {translateNewLine(props.content)}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button 
-            onClick={handleDisagree}
-            disabled={isLoading}
-          >
-            {MESSAGE.CANCEL}
-          </Button>
-          {executeButton()}
-        </DialogActions>
-      </Dialog>
+    <Dialog
+      open={(props.dialogKind === "clearAllDialog") ? clearAllDialogOpen : saveDialogOpen}
+      onClose={handleDisagree}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">
+        {props.title}
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          {translateNewLine(props.content)}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={handleDisagree}
+          disabled={isLoading}
+        >
+          {MESSAGE.CANCEL}
+        </Button>
+        {executeButton()}
+      </DialogActions>
+    </Dialog>
   );
 }
 export default BasicDialog;

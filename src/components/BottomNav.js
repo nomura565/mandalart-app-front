@@ -57,9 +57,9 @@ const BottomNav = (props) => {
               mt: '2px'
             }}
           >
-            <BottomNavigationAction 
-              label={MESSAGE.ACHIEVEMENT_INPUT} 
-              icon={<PaletteIcon color={(isAdmin) ? "disabled" : ""} />} 
+            <BottomNavigationAction
+              label={MESSAGE.ACHIEVEMENT_INPUT}
+              icon={<PaletteIcon color={(isAdmin) ? "disabled" : ""} />}
             />
           </Tooltip>
           <Tooltip title={targetMessage}
@@ -67,9 +67,9 @@ const BottomNav = (props) => {
             open={!checkListDialogOpen}
             placement="bottom"
           >
-            <BottomNavigationAction 
-              label={MESSAGE.TARGET_INPUT} 
-              icon={<DrawIcon color={(isAdmin) ? "disabled" : ""} />} 
+            <BottomNavigationAction
+              label={MESSAGE.TARGET_INPUT}
+              icon={<DrawIcon color={(isAdmin) ? "disabled" : ""} />}
             />
           </Tooltip>
           <Tooltip title={MESSAGE.GROWTH_MESSAGE}
