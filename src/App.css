@@ -83,13 +83,23 @@
 }
 
 .mandalart-cell textarea {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
 }
 
 .mandalart-cell div {
   border-radius: 0px !important;
   height: 85px !important;
   
+}
+
+.mandalart-cell textarea::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  cursor: pointer;
+}
+
+.mandalart-cell textarea::-webkit-scrollbar {
+  background-color: #fff;
+  width: 5px;
 }
 
 .center-cell {
