@@ -90,6 +90,7 @@ export const MESSAGE = {
   ACHIEVEMENT_STATUS: "達成状況",
   DEPARTMENT: "部署",
   NO_SELECT: "選択無し",
+  HELP: "使い方",
 }
 
 export const BASE_URL = 'http://localhost:9050/api/';

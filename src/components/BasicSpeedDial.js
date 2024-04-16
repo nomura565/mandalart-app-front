@@ -7,13 +7,15 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import { useAtom, useAtomValue } from 'jotai';
+import { useSetAtom, useAtomValue } from 'jotai';
 import BasicDialog from './BasicDialog';
 import { MESSAGE, ROLE } from './../components/Const';
 import { format } from 'react-string-format';
 import { formatDateToYM } from './../components/FormatDate';
 import html2canvas from 'html2canvas';
 import { getSession } from './../components/CommonFunc';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import HelpDialog from './HelpDialog';
 
 import {
   clearAllDialogOpenAtom
@@ -22,12 +24,14 @@ import {
   , bottomNavValueAtom
   , selectYmFuncAtom
   , selectYmAtom
+  , helpDialogOpenAtom
 } from './../components/Atoms';
 
 const BasicSpeedDial = (props) => {
 
-  const [clearAllDialogOpen, setClearAllDialogOpen] = useAtom(clearAllDialogOpenAtom);
-  const [saveDialogOpen, setSaveDialogOpen] = useAtom(saveDialogOpenAtom);
+  const setClearAllDialogOpen = useSetAtom(clearAllDialogOpenAtom);
+  const setSaveDialogOpen = useSetAtom(saveDialogOpenAtom);
+  const setHelpDialogOpen = useSetAtom(helpDialogOpenAtom);
   const [isAdmin] = useState((getSession().role_id === ROLE.ADMIN) ? true : false);
   const whenData = useAtomValue(whenDataAtom);
   const bottomNavValue = useAtomValue(bottomNavValueAtom);
@@ -42,6 +46,11 @@ const BasicSpeedDial = (props) => {
   /** オールクリアダイアログオープン */
   const clearAllDialogOpenExecute = () => {
     setClearAllDialogOpen(true);
+  }
+
+  /** ヘルプダイアログオープン */
+  const helpDialogOpenExecute = () => {
+    setHelpDialogOpen(true);
   }
 
   /** 画像出力 */
@@ -84,6 +93,7 @@ const BasicSpeedDial = (props) => {
     { adminUse: false, icon: <SaveIcon color='primary' />, name: format(MESSAGE.SAVE_SPEED_DIAL, yyyymm), onClick: saveDialogOpenExecute },
     { adminUse: true, icon: <CameraAltIcon />, name: MESSAGE.OUTPUT_SPEED_DIAL, onClick: outputExecute },
     { adminUse: false, icon: <DeleteIcon color='error' />, name: MESSAGE.CLEAR_ALL_SPEED_DIAL, onClick: clearAllDialogOpenExecute },
+    { adminUse: true, icon: <HelpOutlineIcon />, name: MESSAGE.HELP, onClick: helpDialogOpenExecute },
   ];
 
   if (isAdmin) {
@@ -112,19 +122,18 @@ const BasicSpeedDial = (props) => {
         ))}
       </SpeedDial>
       <BasicDialog
-        open={clearAllDialogOpen}
         agreeFunc={props.clearAllExecute}
         dialogKind="clearAllDialog"
         title={MESSAGE.CLEAR_ALL_DIALOG_TITLE}
         content={MESSAGE.CLEAR_ALL_DIALOG_CONTENT}
       />
       <BasicDialog
-        open={saveDialogOpen}
         agreeFunc={props.saveExecute}
         dialogKind="saveDialog"
         title={MESSAGE.SAVE_DIALOG_TITLE}
         content={format(MESSAGE.SAVE_DIALOG_CONTENT, yyyymm)}
       />
+      <HelpDialog />
     </Box>
   );
 }
