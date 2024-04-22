@@ -2,6 +2,7 @@ import '../App.css';
 
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import { isBrowser } from "react-device-detect";
 
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -689,8 +690,8 @@ function Top() {
             element={document.getElementById("WholeMandalart")}
           />
         </Container>
-        <ExplanatoryNote />
-        <AchievementGauge getTotalAchievementLevel={getTotalAchievementLevel} />
+        {isBrowser ? <ExplanatoryNote /> : "" }
+        {isBrowser ? <AchievementGauge getTotalAchievementLevel={getTotalAchievementLevel} />: "" }
         <CheckListDialog />
       </ThemeProvider>
     </div>

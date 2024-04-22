@@ -45,7 +45,7 @@ const BasicDialog = (props) => {
       return <CircularProgress size={30} />;
     } else {
       if (isSuccess) {
-        return <CheckIcon color="success" />;
+        return <CheckIcon color="success" sx={{ fontSize: '2.5rem'}} />;
       } else {
         return <Button
           onClick={handleAgree}

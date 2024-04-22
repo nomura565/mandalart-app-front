@@ -1,6 +1,18 @@
 export const AUTHOR = "Yusuke Nomura";
 
-export const SELECT_YYYY_LIST = [2024, 2025];
+const START_YYYY = 2024;
+const NOW_YYYY = new Date().getFullYear();
+
+let TMP_SELECT_YYYY_LIST = [];
+let TMP_YYYY = START_YYYY;
+
+//2024年から来年までを表示する
+while(TMP_YYYY < (NOW_YYYY + 2)){
+  TMP_SELECT_YYYY_LIST.push(TMP_YYYY);
+  TMP_YYYY = TMP_YYYY + 1;
+}
+
+export const SELECT_YYYY_LIST = TMP_SELECT_YYYY_LIST;
 
 /** テーマ */
 export const THEME = {
