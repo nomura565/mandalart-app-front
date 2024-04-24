@@ -12,10 +12,11 @@ import BasicDialog from './BasicDialog';
 import { MESSAGE, ROLE } from './../components/Const';
 import { format } from 'react-string-format';
 import { formatDateToYM } from './../components/FormatDate';
-import html2canvas from 'html2canvas';
 import { getSession } from './../components/CommonFunc';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import HelpDialog from './HelpDialog';
+import * as htmlToImage from 'html-to-image';
+import download from 'downloadjs';
 
 import {
   clearAllDialogOpenAtom
@@ -56,35 +57,21 @@ const BasicSpeedDial = (props) => {
   /** 画像出力 */
   const outputExecute = () => {
     const target = props.element;
-    html2canvas(target).then(canvas => {
-      const targetImgUri = canvas.toDataURL("img/png");
-      saveAsImage(targetImgUri);
-    });
+    saveAsImage(target);
   }
 
-  const saveAsImage = uri => {
-    const downloadLink = document.createElement("a");
-
-    if (typeof downloadLink.download === "string") {
-      downloadLink.href = uri;
-
-      // ファイル名
-      let fileNm = whenData;
-      //成長記録タブ押下、表示押下時は表示中の年月のデータ
-      if (bottomNavValue === 2 && selectYmFunc === 1) {
-        fileNm = selectYm;
-      }
-
-      downloadLink.download = format(MESSAGE.OUTPUT_FILE_NAME, fileNm);
-      // Firefox では body の中にダウンロードリンクがないといけないので一時的に追加
-      document.body.appendChild(downloadLink);
-      // ダウンロードリンクが設定された a タグをクリック
-      downloadLink.click();
-      // Firefox 対策で追加したリンクを削除しておく
-      document.body.removeChild(downloadLink);
-    } else {
-      window.open(uri);
+  const saveAsImage = target => {
+    // ファイル名
+    let fileNm = whenData;
+    //成長記録タブ押下、表示押下時は表示中の年月のデータ
+    if (bottomNavValue === 2 && selectYmFunc === 1) {
+      fileNm = selectYm;
     }
+    fileNm = fileNm + ".png";
+    htmlToImage.toPng(target)
+    .then(function (dataUrl) {
+      download(dataUrl, fileNm);
+    });
   }
 
   const yyyymm = formatDateToYM(new Date());
