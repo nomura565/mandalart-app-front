@@ -92,7 +92,7 @@ const MandalartCell = (props) => {
   const setSyncMandalartCell = useSetAtom(mandalartCellList[syncCellIdx]);
   const selectYmFunc = useAtomValue(selectYmFuncAtom);
 
-  let cellClass = "mandalart-cell";
+  let cellClass = (bottomNavValue === 1) ? "mandalart-cell" : "mandalart-cell mandalart-cell-input";
   if (isTop) cellClass = `${cellClass} mandalart-cell-top`;
   if (isBottom) cellClass = `${cellClass} mandalart-cell-bottom`;
   if (isLeft) cellClass = `${cellClass} mandalart-cell-left`;
