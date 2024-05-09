@@ -84,6 +84,7 @@
 
 .mandalart-cell textarea {
   font-size: 0.6rem;
+  line-height: 18px;
 }
 
 .mandalart-cell-input textarea {

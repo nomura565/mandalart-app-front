@@ -163,7 +163,7 @@ function Login() {
                     id="userId"
                     label="User Id"
                     name="userId"
-                    autoComplete="userID"
+                    autoComplete="username"
                     onChange={userIdChange}
                     helperText={errorMessageUserId}
                   />
