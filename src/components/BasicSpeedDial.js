@@ -77,14 +77,18 @@ const BasicSpeedDial = (props) => {
   const yyyymm = formatDateToYM(new Date());
 
   let actions = [
-    { adminUse: false, icon: <SaveIcon color='primary' />, name: format(MESSAGE.SAVE_SPEED_DIAL, yyyymm), onClick: saveDialogOpenExecute },
-    { adminUse: true, icon: <CameraAltIcon />, name: MESSAGE.OUTPUT_SPEED_DIAL, onClick: outputExecute },
-    { adminUse: false, icon: <DeleteIcon color='error' />, name: MESSAGE.CLEAR_ALL_SPEED_DIAL, onClick: clearAllDialogOpenExecute },
-    { adminUse: true, icon: <HelpOutlineIcon />, name: MESSAGE.HELP, onClick: helpDialogOpenExecute },
+    { adminUse: false, alwaysUse: false, icon: <SaveIcon color='primary' />, name: format(MESSAGE.SAVE_SPEED_DIAL, yyyymm), onClick: saveDialogOpenExecute },
+    { adminUse: true, alwaysUse: true,icon: <CameraAltIcon />, name: MESSAGE.OUTPUT_SPEED_DIAL, onClick: outputExecute },
+    { adminUse: false, alwaysUse: true,icon: <DeleteIcon color='error' />, name: MESSAGE.CLEAR_ALL_SPEED_DIAL, onClick: clearAllDialogOpenExecute },
+    { adminUse: true, alwaysUse: true,icon: <HelpOutlineIcon />, name: MESSAGE.HELP, onClick: helpDialogOpenExecute },
   ];
 
   if (isAdmin) {
     actions = actions.filter(action => action.adminUse);
+  }
+
+  if (bottomNavValue === 2) {
+    actions = actions.filter(action => action.alwaysUse);
   }
 
   return (
