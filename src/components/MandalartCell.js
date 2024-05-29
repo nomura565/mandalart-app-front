@@ -116,6 +116,9 @@ const MandalartCell = (props) => {
     if (mandalartCell.achievementLevel === 0) {
       afterClass = defaultClass;
     }
+    if (props.isCenter) {
+      afterClass = `${afterClass} ${centerCellClass}`;
+    }
     return afterClass;
   }
   /** マンダラート機能変更 */

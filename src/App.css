@@ -110,6 +110,11 @@
 
 .center-cell {
   background-color: #f1f5f9;
+  
+}
+
+.center-cell textarea {
+  font-weight: bold;
 }
 
 .achievement-cell-level-1 {
