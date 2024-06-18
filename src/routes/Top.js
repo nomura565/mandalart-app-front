@@ -342,9 +342,9 @@ function Top() {
       });
   }
 
-  const departmentChange = (event) => {
+  const departmentChange = (value) => {
     initFunc();
-    setDepartment(event.target.value);
+    setDepartment(value);
   };
 
   /** ユーザ一覧取得 */
@@ -412,7 +412,12 @@ function Top() {
             //年月比較でマンダラート取得したパターン
             let mandalartCellArrayList = getMandalartCellArrayList();
             SetMandalartCellArrayList.forEach((setCell, idx) => {
-              if (mandalartCellArrayList[idx].achievementLevel !== response.data[`achievement_level_${idx}`]) {
+              let compare_level = mandalartCellArrayList[idx].achievementLevel;
+              if (_current_data) {
+                compare_level = _current_data[`achievement_level_${idx}`];
+              }
+
+              if (compare_level !== response.data[`achievement_level_${idx}`]) {
                 setCell((oldValue) => ({ ...oldValue, isGrow: true }));
               } else {
                 setCell((oldValue) => ({ ...oldValue, isGrow: false }));
@@ -433,9 +438,10 @@ function Top() {
                 if (_current_data) {
                   compare_level = _current_data[`achievement_level_${idx}`];
                   compare_field_value = _current_data[`target_${idx}`];
+                  
                 }
                 if (mandalartCellArrayList[idx].achievementLevel !== compare_level) {
-                  setCell((oldValue) => ({ ...oldValue, isGrow: true }));
+                  if(!isNull(_selectYmFunc)) setCell((oldValue) => ({ ...oldValue, isGrow: true }));
                 }
                 setCell((oldValue) => ({ ...oldValue, achievementLevel: compare_level }));
                 setCell((oldValue) => ({ ...oldValue, textFieldValue: compare_field_value }));
@@ -479,8 +485,8 @@ function Top() {
   }
 
   /** 選択ユーザ変更 */
-  const selectUserIdChange = (e) => {
-    setSelectUserId(e.target.value);
+  const selectUserIdChange = (value) => {
+    setSelectUserId(value);
     let _yyyymm = false;
     //成長記録が選択　かつ　表示タブが押下されている　かつ　比較する年月が選択されている　なら比較する年月のデータを取得
     if (bottomNavValue === 2 && selectYmFunc === 1 && selectYm !== "") {
@@ -488,12 +494,12 @@ function Top() {
     }
     //管理者は最新の実績と比較する年月を取得する
     if (isAdmin) {
-      getMandalart(e.target.value)
+      getMandalart(value)
         .then((current_data) => {
-          getMandalart(e.target.value, selectYm, null, current_data)
+          getMandalart(value, selectYm, null, current_data)
         });
     } else {
-      getMandalart(e.target.value, _yyyymm);
+      getMandalart(value, _yyyymm);
     }
 
   }
@@ -546,7 +552,7 @@ function Top() {
                     <Select
                       labelId="select-department-label"
                       label={MESSAGE.DEPARTMENT}
-                      onChange={departmentChange}
+                      onChange={(e) => departmentChange(e.target.value)}
                       value={department}
                     >
                       <MenuItem value="">
@@ -568,7 +574,7 @@ function Top() {
                     labelId="select-user-label"
                     id="select-user"
                     label={MESSAGE.SELECT_USER_LABEL}
-                    onChange={selectUserIdChange}
+                    onChange={(e) => selectUserIdChange(e.target.value)}
                     value={selectUserId}
                     disabled={!isAdmin}
                   >
@@ -692,7 +698,10 @@ function Top() {
         </Container>
         {isBrowser ? <ExplanatoryNote /> : "" }
         {isBrowser ? <AchievementGauge getTotalAchievementLevel={getTotalAchievementLevel} />: "" }
-        <CheckListDialog />
+        <CheckListDialog 
+          departmentChange={departmentChange}
+          selectUserIdChange={selectUserIdChange}
+        />
       </ThemeProvider>
     </div>
   );

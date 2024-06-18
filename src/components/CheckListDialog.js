@@ -136,6 +136,12 @@ const CheckListDialog = (props) => {
     setSelectYy(e.target.value);
     getAcheivementList(selectUserId, e.target.value);
   }
+  /** ユーザ名変更時 */
+  const onClickUserName = (user_id) => {
+    setCheckListDialogOpen(false);
+    props.departmentChange("");
+    props.selectUserIdChange(user_id);
+  }
 
   const rateFormatter = (value) => (isNull(value)) ? "" : value + "%";
 
@@ -145,6 +151,8 @@ const CheckListDialog = (props) => {
       onClose={handleDisagree}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
+      fullWidth={true}
+      maxWidth="md"
     >
       <DialogTitle id="alert-dialog-title">
         {MESSAGE.ACHIEVEMENT_STATUS}
@@ -254,8 +262,10 @@ const CheckListDialog = (props) => {
               <TableHead>
                 <TableRow>
                   <TableCell></TableCell>
+                  <TableCell>{MESSAGE.DEPARTMENT}</TableCell>
                   <TableCell>{MESSAGE.USER_NAME}</TableCell>
                   <TableCell align="right">{MESSAGE.MAX_YYYYMM}</TableCell>
+                  <TableCell align="right">{MESSAGE.UPDATE_DATE}</TableCell>
                   <TableCell align="right">{MESSAGE.ACHIEVEMENT_GAUGE_VALUE}</TableCell>
                 </TableRow>
               </TableHead>
@@ -282,8 +292,10 @@ const CheckListDialog = (props) => {
                         <TimelineIcon />
                       </IconButton>
                     </TableCell>
-                    <TableCell>{row.user_name}</TableCell>
+                    <TableCell>{row.department_name}</TableCell>
+                    <TableCell><a href="#" onClick={(user_id) => onClickUserName(row.user_id)}>{row.user_name}</a></TableCell>
                     <TableCell align="right">{row.max_yyyymm}</TableCell>
+                    <TableCell align="right">{row.update_date}</TableCell>
                     <TableCell align="right">{row.achievement_gauge_value}</TableCell>
                   </TableRow>
                 ))}

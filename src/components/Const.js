@@ -98,6 +98,7 @@ export const MESSAGE = {
   OUTPUT_FILE_NAME: "{0}のマンダラート.png",
   USER_NAME: "ユーザ名",
   MAX_YYYYMM: "最終登録月",
+  UPDATE_DATE: "更新日",
   ACHIEVEMENT_GAUGE_VALUE: "達成率",
   ACHIEVEMENT_STATUS: "達成状況",
   DEPARTMENT: "部署",

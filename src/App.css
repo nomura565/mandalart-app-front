@@ -182,3 +182,20 @@
   justify-content: flex-start;
   text-align: left;
 }
+
+a:link { /*アクセスしたことのないリンク*/
+  color:#1276d9;
+}
+
+a:visited { /*アクセスしたことのあるリンク*/
+  color:#1276d9;
+}
+
+a:hover {/*マウスが上に乗っている状態*/
+  color:#d87f8b;
+  text-decoration:underline;
+}
+
+a:active {/*クリック中*/
+  color:#98d02d;
+}
